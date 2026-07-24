@@ -1,3 +1,5 @@
+const profileDB = require("../../database/profile");
+
 const {
     EmbedBuilder,
     ActionRowBuilder,
@@ -17,6 +19,7 @@ module.exports = {
             message.member;
 
         const user = member.user;
+        const profile = await profileDB.get(user.id);
 
         await user.fetch().catch(() => {});
 
@@ -40,7 +43,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setThumbnail(avatar)
-            .setDescription(
+        .setDescription(
 `## ${user.username}'s Profile
 
 <:search:1523258723974381580> __**General**__
@@ -48,6 +51,16 @@ module.exports = {
 > **Display Name :** ${member.displayName}
 > **User ID :** ${user.id}
 > **Bot :** ${user.bot ? "Yes" : "No"}
+
+📝 __**Profile**__
+> **Bio :** ${profile.bio || "Not set"}
+> **Birthday :** ${profile.birthday || "Not set"}
+> **Theme :** ${profile.theme || "Default"}
+
+🌐 __**Socials**__
+> **Website :** ${profile.website || "Not set"}
+> **Instagram :** ${profile.instagram || "Not set"}
+> **YouTube :** ${profile.youtube || "Not set"}
 
 <:bluetick:1523423666585604106> __**Dates**__
 > **Created :** <t:${Math.floor(user.createdTimestamp / 1000)}:R>
@@ -57,8 +70,8 @@ module.exports = {
 > **Top Role :** ${member.roles.highest}
 > **Boosting :** ${member.premiumSince ? `<t:${Math.floor(member.premiumSinceTimestamp / 1000)}:R>` : "No"}
 > **Roles :** ${roles}`
-            );
-
+);
+            
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId("avatar")
