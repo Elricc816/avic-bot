@@ -16,7 +16,7 @@ module.exports = {
             .setDescription(
 `**Invite Elara !**
 
-<:arrow:1514699753462566953> Thank you for your interest in using Elara! Invite me to your server and join our **Support Server** if you ever need any help.`
+<:arrow:1514699753462566953> Thank you for your interest in using Elara! Invite me to your server and join our **Support Server** if you ever need any **help**.`
             );
 
         const row = new ActionRowBuilder().addComponents(
