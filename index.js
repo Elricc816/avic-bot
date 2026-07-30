@@ -187,6 +187,9 @@ for (const user of message.mentions.users.values()) {
   
   if (message.author.bot) return;
 
+  await db.add(`stats.${message.author.id}.messages`, 1);
+await db.add(`stats.${message.author.id}.xp`, 5);
+
 if (message.reference) {
   try {
     const replied = await message.channel.messages.fetch(
