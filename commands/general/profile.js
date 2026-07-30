@@ -39,13 +39,13 @@ module.exports = {
             })
             .setThumbnail(avatar)
             .setDescription(
-`### 👤 About
+`### <:member2:1514699734038876343> About
 
 > **Bio:** ${profile.bio || "*Nothing here yet.*"}
 > **Birthday:** ${profile.birthday || "Not set"}
 > **Pronouns:** ${profile.pronouns || "Not set"}
 
-### ⚙️ Account
+### <:hat:1514699954264998041> Account
 
 > **Created:** <t:${Math.floor(user.createdTimestamp / 1000)}:R>
 > **Joined:** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>
@@ -59,19 +59,19 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId("about")
                 .setLabel("About")
-                .setEmoji("👤")
+                .setEmoji("<:member2:1514699734038876343>")
                 .setStyle(ButtonStyle.Primary),
 
             new ButtonBuilder()
                 .setCustomId("social")
                 .setLabel("Social")
-                .setEmoji("🔗")
+                .setEmoji("<:link:1514699706788221120>")
                 .setStyle(ButtonStyle.Secondary),
 
             new ButtonBuilder()
                 .setCustomId("stats")
                 .setLabel("Stats")
-                .setEmoji("📊")
+                .setEmoji("<:info:1514699288674828310>")
                 .setStyle(ButtonStyle.Secondary)
 
         );
@@ -114,7 +114,7 @@ module.exports = {
                     })
                     .setThumbnail(avatar)
                     .setDescription(
-`### 🔗 Social
+`### <:link:1514699706788221120> Social
 
 > **Website:** ${data.website || "Not connected"}
 > **Instagram:** ${data.instagram || "Not connected"}
@@ -141,7 +141,7 @@ module.exports = {
                     })
                     .setThumbnail(avatar)
                     .setDescription(
-`### 📊 Stats
+`### <:info:1514699288674828310> Stats
 
 > **Level:** ${Math.floor((stats.xp || 0) / 100)}
 > **XP:** ${stats.xp || 0}
