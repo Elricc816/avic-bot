@@ -139,14 +139,13 @@ module.exports = {
                     .setDescription(
 `### 📊 Stats
 
-> **Level:** Coming Soon
-> **XP:** Coming Soon
-> **Rank:** Coming Soon
-> **Messages:** Coming Soon
+> **Level:** ${Math.floor((data.xp || 0) / 100)}
+> **XP:** ${data.xp || 0}/100
+> **Messages:** ${data.messages || 0}
 > **Voice Time:** Coming Soon
 
 -# Requested by ${message.author}`
-                    );
+)
 
                 return interaction.update({
                     embeds: [statsEmbed]
