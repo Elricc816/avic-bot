@@ -17,9 +17,9 @@ module.exports = {
             .setDescription(
 `Choose what you'd like to edit:
 
-👤 **About** — bio, birthday, pronouns, theme colour, banner
+<:member2:1514699734038876343> **About** — bio, birthday, pronouns, theme colour, banner
 
-🔗 **Socials** — Instagram, YouTube, Twitter/X, Twitch, website`
+<:link:1514699706788221120> **Socials** — Instagram, YouTube, Twitter/X, Twitch, website`
             );
 
         const row = new ActionRowBuilder().addComponents(
@@ -27,13 +27,13 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId("about_edit")
                 .setLabel("About")
-                .setEmoji("👤")
+                .setEmoji("<:member2:1514699734038876343>")
                 .setStyle(ButtonStyle.Primary),
 
             new ButtonBuilder()
                 .setCustomId("social_edit")
                 .setLabel("Socials")
-                .setEmoji("🔗")
+                .setEmoji("<:link:1514699706788221120>")
                 .setStyle(ButtonStyle.Secondary)
 
         );
