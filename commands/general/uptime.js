@@ -16,7 +16,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setDescription(
-`### **Elara's Uptime !**
+`### **Avic's Uptime !**
 <:arrow:1514699753462566953> I have been online for **__${days}d ${hours}h ${minutes}m ${seconds}s__**`
             );
 
