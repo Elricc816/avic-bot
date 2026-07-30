@@ -1,3 +1,6 @@
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+
 const {
     EmbedBuilder,
     ActionRowBuilder,
@@ -21,6 +24,7 @@ module.exports = {
         const user = member.user;
 
         const profile = await profileDB.get(user.id);
+        const stats = await db.get(`stats.${user.id}`) || {};
 
         const avatar = user.displayAvatarURL({
             dynamic: true,
@@ -139,9 +143,9 @@ module.exports = {
                     .setDescription(
 `### 📊 Stats
 
-> **Level:** ${Math.floor((data.xp || 0) / 100)}
-> **XP:** ${data.xp || 0}/100
-> **Messages:** ${data.messages || 0}
+> **Level:** ${Math.floor((stats.xp || 0) / 100)}
+> **XP:** ${stats.xp || 0}
+> **Messages:** ${stats.messages || 0}
 > **Voice Time:** Coming Soon
 
 -# Requested by ${message.author}`
