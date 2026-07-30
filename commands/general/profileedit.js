@@ -38,48 +38,11 @@ module.exports = {
 
         );
 
-        const msg = await message.reply({
+        await message.reply({
             embeds: [embed],
             components: [row]
         });
 
-        const collector = msg.createMessageComponentCollector({
-            time: 300000
-        });
-
-        collector.on("collect", async interaction => {
-
-            if (interaction.user.id !== message.author.id) {
-                return interaction.reply({
-                    content: "This menu isn't yours.",
-                    ephemeral: true
-                });
-            }
-
-            // interactionCreate.js will handle opening the modals
-            await interaction.deferUpdate();
-
-        });
-
-        collector.on("end", async () => {
-
-            try {
-
-                const disabledRow = new ActionRowBuilder().addComponents(
-
-                    ButtonBuilder.from(row.components[0]).setDisabled(true),
-
-                    ButtonBuilder.from(row.components[1]).setDisabled(true)
-
-                );
-
-                await msg.edit({
-                    components: [disabledRow]
-                });
-
-            } catch {}
-
-        });
-
     }
+
 };
