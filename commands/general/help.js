@@ -89,7 +89,7 @@ Upgrade to Avic Premium for exclusive features ! <:diamond:1514699495768592635>
 )
 
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-      .setImage('https://cdn.discordapp.com/attachments/1520755555818541146/1532388852373786827/file_00000000727881fa90c50490979dfdca.png?ex=6a6cabd4&is=6a6b5a54&hm=dcf2af907bd7dcf26baf80487d24130f287dc8197b6cee22fea8a89f081fe327&')
+      .setImage('https://cdn.discordapp.com/attachments/1525384165426598030/1532413355837620377/Screenshot_20260730-204448_Gallery.jpg?ex=6a6cc2a6&is=6a6b7126&hm=7507abf741eae1e3515bf709f5113ac8d65b8dbbfce6bad7c22b284e4ece01b3&')
 
       .setFooter({
         text: `Executed by ${message.author.username}`,
