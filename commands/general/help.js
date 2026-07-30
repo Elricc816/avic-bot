@@ -41,11 +41,11 @@ module.exports = {
     const api = Math.round(client.ws.ping);
 
     const embed = new EmbedBuilder()
-      .setColor('#90EE90')
+      .setColor('#808080')
       .setDescription(
-`### Hii , I'm **Elara**
+`### Hey , This is **Avic**
 
-<:white_arrow:1514714190231769219> **Your gentle server guardian, offering powerful moderation, reliable security, smart automation, and thoughtful utilities for every Discord community.**
+<:white_arrow:1514714190231769219> A powerful, multi-purpose Discord bot built for **server security**, **moderation**, **high-fidelity utility tools** and much more.
 
 <a:BlackDot:1514727923175657654> **Current Prefix:** \`,\`
 <a:BlackDot:1514727923175657654> **Use \`,help <category>\` to view commands.**
@@ -79,17 +79,17 @@ module.exports = {
 <:white_arrow:1514714190231769219> Select a category from the dropdown menu below to view available commands.
 
 **<:info:1514699288674828310>  __Pro Tip__**
-Upgrade to Elara Premium for exclusive features ! <:diamond:1514699495768592635>
+Upgrade to Avic Premium for exclusive features ! <:diamond:1514699495768592635>
 
 **<:link:1514699706788221120>  __Links__**
 [Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/ZnTDxjc5Zb) <:devv:1514699301144756234>
 
 -# Developed by <@1306606920836055043> <:dev:1514699929199706143>
--# <:heartt:1514699719400755432> Thanks For Using Elara!`
+-# <:heartt:1514699719400755432> Thanks For Using Avic!`
 )
 
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-      .setImage('https://cdn.discordapp.com/attachments/1511260437469991004/1527740716803952700/6cac377f8fffd40a441b582dbbadbf80.jpg?ex=6a5bc2ea&is=6a5a716a&hm=6ff0bb95b78b8fc117d1e43bd4aa7c4c832d7a57f5beea31a104aae15cf48d68&')
+      .setImage('https://cdn.discordapp.com/attachments/1520755555818541146/1532388852373786827/file_00000000727881fa90c50490979dfdca.png?ex=6a6cabd4&is=6a6b5a54&hm=dcf2af907bd7dcf26baf80487d24130f287dc8197b6cee22fea8a89f081fe327&')
 
       .setFooter({
         text: `Executed by ${message.author.username}`,
