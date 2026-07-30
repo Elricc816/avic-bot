@@ -11,16 +11,20 @@ module.exports = (client) => {
 
     client.on("interactionCreate", async (interaction) => {
 
+        // Buttons from ,profileedit
         if (interaction.isButton()) {
 
             const fields = {
                 bio: "Bio",
                 birthday: "Birthday",
+                pronouns: "Pronouns",
+                theme: "Theme",
+                banner: "Banner URL",
                 website: "Website",
                 instagram: "Instagram",
                 youtube: "YouTube",
-                theme: "Theme Color",
-                banner: "Banner URL"
+                twitter: "Twitter/X",
+                twitch: "Twitch"
             };
 
             if (!fields[interaction.customId]) return;
@@ -31,7 +35,7 @@ module.exports = (client) => {
 
             const input = new TextInputBuilder()
                 .setCustomId("value")
-                .setLabel(`Enter your ${fields[interaction.customId]}`)
+                .setLabel(`Enter ${fields[interaction.customId]}`)
                 .setStyle(
                     interaction.customId === "bio"
                         ? TextInputStyle.Paragraph
@@ -46,6 +50,7 @@ module.exports = (client) => {
             return interaction.showModal(modal);
         }
 
+        // Modal submit
         if (interaction.isModalSubmit()) {
 
             if (!interaction.customId.startsWith("profile_")) return;
@@ -58,7 +63,7 @@ module.exports = (client) => {
             });
 
             return interaction.reply({
-                content: `✅ Your **${field}** has been updated!`,
+                content: `✅ Updated **${field}** successfully!`,
                 ephemeral: true
             });
         }
