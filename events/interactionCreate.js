@@ -11,59 +11,145 @@ module.exports = (client) => {
 
     client.on("interactionCreate", async (interaction) => {
 
-        // Buttons from ,profileedit
+        // =========================
+        // PROFILE EDIT BUTTONS
+        // =========================
+
         if (interaction.isButton()) {
 
-            const fields = {
-                bio: "Bio",
-                birthday: "Birthday",
-                pronouns: "Pronouns",
-                theme: "Theme",
-                banner: "Banner URL",
-                website: "Website",
-                instagram: "Instagram",
-                youtube: "YouTube",
-                twitter: "Twitter/X",
-                twitch: "Twitch"
-            };
+            // ABOUT MODAL
+            if (interaction.customId === "about_edit") {
 
-            if (!fields[interaction.customId]) return;
+                const modal = new ModalBuilder()
+                    .setCustomId("profile_about")
+                    .setTitle("Edit About");
 
-            const modal = new ModalBuilder()
-                .setCustomId(`profile_${interaction.customId}`)
-                .setTitle(`Edit ${fields[interaction.customId]}`);
+                const bio = new TextInputBuilder()
+                    .setCustomId("bio")
+                    .setLabel("Biography")
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setRequired(false)
+                    .setMaxLength(250);
 
-            const input = new TextInputBuilder()
-                .setCustomId("value")
-                .setLabel(`Enter ${fields[interaction.customId]}`)
-                .setStyle(
-                    interaction.customId === "bio"
-                        ? TextInputStyle.Paragraph
-                        : TextInputStyle.Short
-                )
-                .setRequired(true);
+                const birthday = new TextInputBuilder()
+                    .setCustomId("birthday")
+                    .setLabel("Birthday")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
 
-            modal.addComponents(
-                new ActionRowBuilder().addComponents(input)
-            );
+                const pronouns = new TextInputBuilder()
+                    .setCustomId("pronouns")
+                    .setLabel("Pronouns")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
 
-            return interaction.showModal(modal);
+                const theme = new TextInputBuilder()
+                    .setCustomId("theme")
+                    .setLabel("Theme Colour (Hex)")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const banner = new TextInputBuilder()
+                    .setCustomId("banner")
+                    .setLabel("Banner URL")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(bio),
+                    new ActionRowBuilder().addComponents(birthday),
+                    new ActionRowBuilder().addComponents(pronouns),
+                    new ActionRowBuilder().addComponents(theme),
+                    new ActionRowBuilder().addComponents(banner)
+                );
+
+                return interaction.showModal(modal);
+            }
+
+        // SOCIAL MODAL
+            if (interaction.customId === "social_edit") {
+
+                const modal = new ModalBuilder()
+                    .setCustomId("profile_social")
+                    .setTitle("Edit Socials");
+
+                const instagram = new TextInputBuilder()
+                    .setCustomId("instagram")
+                    .setLabel("Instagram")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const youtube = new TextInputBuilder()
+                    .setCustomId("youtube")
+                    .setLabel("YouTube")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const twitter = new TextInputBuilder()
+                    .setCustomId("twitter")
+                    .setLabel("Twitter / X")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const twitch = new TextInputBuilder()
+                    .setCustomId("twitch")
+                    .setLabel("Twitch")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                const website = new TextInputBuilder()
+                    .setCustomId("website")
+                    .setLabel("Website")
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(false);
+
+                modal.addComponents(
+                    new ActionRowBuilder().addComponents(instagram),
+                    new ActionRowBuilder().addComponents(youtube),
+                    new ActionRowBuilder().addComponents(twitter),
+                    new ActionRowBuilder().addComponents(twitch),
+                    new ActionRowBuilder().addComponents(website)
+                );
+
+                return interaction.showModal(modal);
+            }
+
         }
 
-        // Modal submit
-        if (interaction.isModalSubmit()) {
+        // =========================
+        // MODAL SUBMITS
+        // =========================
 
-            if (!interaction.customId.startsWith("profile_")) return;
+        if (!interaction.isModalSubmit()) return;
 
-            const field = interaction.customId.replace("profile_", "");
-            const value = interaction.fields.getTextInputValue("value");
+              if (interaction.customId === "profile_about") {
 
             await profileDB.set(interaction.user.id, {
-                [field]: value
+                bio: interaction.fields.getTextInputValue("bio"),
+                birthday: interaction.fields.getTextInputValue("birthday"),
+                pronouns: interaction.fields.getTextInputValue("pronouns"),
+                theme: interaction.fields.getTextInputValue("theme"),
+                banner: interaction.fields.getTextInputValue("banner")
             });
 
             return interaction.reply({
-                content: `✅ Updated **${field}** successfully!`,
+                content: "✅ Your **About** profile has been updated!",
+                ephemeral: true
+            });
+        }
+
+        if (interaction.customId === "profile_social") {
+
+            await profileDB.set(interaction.user.id, {
+                instagram: interaction.fields.getTextInputValue("instagram"),
+                youtube: interaction.fields.getTextInputValue("youtube"),
+                twitter: interaction.fields.getTextInputValue("twitter"),
+                twitch: interaction.fields.getTextInputValue("twitch"),
+                website: interaction.fields.getTextInputValue("website")
+            });
+
+            return interaction.reply({
+                content: "✅ Your **Socials** have been updated!",
                 ephemeral: true
             });
         }
