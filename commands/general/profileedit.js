@@ -7,60 +7,78 @@ const {
 
 module.exports = {
     name: "profileedit",
-    aliases: ["editprofile"],
+    aliases: ["profile edit", "editprofile"],
 
     async execute(message) {
 
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
+            .setTitle("Profile Editor")
             .setDescription(
-`## ✏️ Edit Your Profile
+`Choose what you'd like to edit:
 
-Choose what you want to edit.`
+👤 **About** — bio, birthday, pronouns, theme colour, banner
+
+🔗 **Socials** — Instagram, YouTube, Twitter/X, Twitch, website`
             );
 
-        const row1 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId("bio")
-                .setLabel("Bio")
-                .setStyle(ButtonStyle.Secondary),
+        const row = new ActionRowBuilder().addComponents(
 
             new ButtonBuilder()
-                .setCustomId("birthday")
-                .setLabel("Birthday")
-                .setStyle(ButtonStyle.Secondary),
+                .setCustomId("about_edit")
+                .setLabel("About")
+                .setEmoji("👤")
+                .setStyle(ButtonStyle.Primary),
 
             new ButtonBuilder()
-                .setCustomId("website")
-                .setLabel("Website")
-                .setStyle(ButtonStyle.Secondary),
-
-            new ButtonBuilder()
-                .setCustomId("instagram")
-                .setLabel("Instagram")
+                .setCustomId("social_edit")
+                .setLabel("Socials")
+                .setEmoji("🔗")
                 .setStyle(ButtonStyle.Secondary)
+
         );
 
-        const row2 = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId("youtube")
-                .setLabel("YouTube")
-                .setStyle(ButtonStyle.Secondary),
-
-            new ButtonBuilder()
-                .setCustomId("theme")
-                .setLabel("Theme")
-                .setStyle(ButtonStyle.Secondary),
-
-            new ButtonBuilder()
-                .setCustomId("banner")
-                .setLabel("Banner")
-                .setStyle(ButtonStyle.Secondary)
-        );
-
-        await message.reply({
+        const msg = await message.reply({
             embeds: [embed],
-            components: [row1, row2]
+            components: [row]
+        });
+
+        const collector = msg.createMessageComponentCollector({
+            time: 300000
+        });
+
+        collector.on("collect", async interaction => {
+
+            if (interaction.user.id !== message.author.id) {
+                return interaction.reply({
+                    content: "This menu isn't yours.",
+                    ephemeral: true
+                });
+            }
+
+            // interactionCreate.js will handle opening the modals
+            await interaction.deferUpdate();
+
+        });
+
+        collector.on("end", async () => {
+
+            try {
+
+                const disabledRow = new ActionRowBuilder().addComponents(
+
+                    ButtonBuilder.from(row.components[0]).setDisabled(true),
+
+                    ButtonBuilder.from(row.components[1]).setDisabled(true)
+
+                );
+
+                await msg.edit({
+                    components: [disabledRow]
+                });
+
+            } catch {}
+
         });
 
     }
