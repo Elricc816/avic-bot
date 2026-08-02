@@ -38,11 +38,13 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor("#D3D3D3")
       .setAuthor({
-        name: "It's AVIC <:devs:1514699513271685360>",
+        name: "Avic#5361",
         iconURL: client.user.displayAvatarURL()
       })
       .setThumbnail(client.user.displayAvatarURL({ size: 1024 }))
-      .setDescription(`A powerful, multi-purpose Discord bot built for **server security, moderation, utility** and much more.
+      .setDescription(`### It's AVIC <:devs:1514699513271685360>
+      
+      A powerful, multi-purpose Discord bot built for **server security, moderation, utility** and much more.
 Trusted by **${guilds.toLocaleString()}** servers and **${users.toLocaleString()}** users worldwide.
 
 Currently running with a websocket latency of **${latency}ms** and has been online for **${days}d ${hours}h ${mins}m**.
