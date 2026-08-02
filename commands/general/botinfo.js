@@ -55,7 +55,9 @@ Built with **Node.js ${process.version}** and **discord.js v14**.
 
 Using **${memory} MB** of memory.
 
-Read the **documentation** for detailed guides & commands, visit our **website** for updates, or join the **support server** for help.`
+Read the **documentation** for detailed guides & commands, visit our **website** for updates, or join the **support server** for help.
+
+Bot Developed by <@1306606920836055043>`
       )
       .setFooter({
         text: `Requested by ${message.author.username}`,
