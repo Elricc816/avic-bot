@@ -57,8 +57,7 @@ module.exports = {
 The bot is currently serving **${users.toLocaleString()}** users across **${servers.toLocaleString()}** servers, managing a total of **${channels.toLocaleString()}** channels. It has been running continuously for **${uptimeString}** with a websocket latency of **${ping}ms**.
 
 Running on **1** shard, this server is routed through **Shard ${shard}**. The bot is consuming **${ram} MB** of memory, powered by **Node.js ${node}** and **discord.js v${djs}**. A total of **${commands}** commands are loaded and operational.`
-            );
-embed.setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
+            );embed.setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
 
         embed.setFooter({
             text: `Requested by ${message.author.username} • ${new Date().toLocaleString()}`,
@@ -90,7 +89,7 @@ embed.setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
                 .setStyle(ButtonStyle.Link)
                 .setURL("https://discord.gg/HRE4N4zJHK")
         );
-      const row1 = new ActionRowBuilder().addComponents(
+        const row1 = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setLabel("Status")
                 .setStyle(ButtonStyle.Link)
