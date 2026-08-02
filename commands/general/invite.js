@@ -14,9 +14,9 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setDescription(
-`**Invite Elara !**
+`**Invite Avic !**
 
-<:arrow:1514699753462566953> Thank you for your interest in using Elara! Invite me to your server and join our **Support Server** if you ever need any **help**.`
+<:arrow:1514699753462566953> Thank you for your interest in using Avic! Invite me to your server and join our **Support Server** if you ever need any **help**.`
             );
 
         const row = new ActionRowBuilder().addComponents(
