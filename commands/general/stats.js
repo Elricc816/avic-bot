@@ -66,7 +66,9 @@ module.exports = {
         .setDescription(
 `### <:signal:1533480238393065575> AVIC's Statistics
 
-Comprehensive real-time overview of **AVIC**'s operational status, resource usage, and shard distribution across the network. The bot is currently serving **${users.toLocaleString()}** users across **${servers.toLocaleString()}** servers, managing a total of **${channels.toLocaleString()}** channels. It has been running continuously for **${uptimeString}** with a websocket latency of **${ping}ms**. Running on **1** shard, this server is routed through **Shard ${shard}**. The bot is consuming **${ram} MB** of memory, powered by **Node.js ${node}** and **discord.js v${djs}**.
+Comprehensive real-time overview of **AVIC**'s operational status, resource usage, and shard distribution across the network. 
+
+The bot is currently serving **${users.toLocaleString()}** users across **${servers.toLocaleString()}** servers, managing a total of **${channels.toLocaleString()}** channels. It has been running continuously for **${uptimeString}** with a websocket latency of **${ping}ms**. Running on **1** shard, this server is routed through **Shard ${shard}**. The bot is consuming **${ram} MB** of memory, powered by **Node.js ${node}** and **discord.js v${djs}**.
 A total of **${commands}** commands are loaded and operational.`
             )
             .setFooter({
