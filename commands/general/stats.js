@@ -9,6 +9,7 @@ const discord = require("discord.js");
 
 module.exports = {
     name: "stats",
+    aliases: ["statistics", "botstats"],
 
     async execute(message, args, client) {
 
@@ -17,9 +18,9 @@ module.exports = {
         const days = Math.floor(uptime / 86400);
         const hours = Math.floor((uptime % 86400) / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
-        const seconds = Math.floor(uptime % 60);
 
-        const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        const uptimeString =
+            `${days}d ${hours}h ${minutes}m`;
 
         const servers = client.guilds.cache.size;
 
@@ -30,19 +31,19 @@ module.exports = {
 
         const channels = client.channels.cache.size;
 
-        const commands = client.commands.size;
-
         const ping = client.ws.ping;
 
         const ram = (
             process.memoryUsage().rss /
             1024 /
             1024
-        ).toFixed(2);
+        ).toFixed(1);
 
-        const node = process.version;
+        const node = process.version.replace("v", "");
 
         const djs = discord.version;
+
+        const commands = client.commands.size;
 
         const shard = client.shard
             ? client.shard.ids[0]
@@ -50,46 +51,41 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
-            .setTitle("🟢 AVIC's Statistics")
-            .setDescription(
-`Comprehensive real-time overview of AVIC's operational status, resource usage, and shard distribution across the network.
+            .setAuthor({
+                name: "AVIC's Statistics",
+                iconURL: client.user.displayAvatarURL({
+                    dynamic: true
+                })
+            })
+            .setThumbnail(
+                client.user.displayAvatarURL({
+                    dynamic: true,
+                    size: 1024
+                })
+            )
+        .setDescription(
+`### 📊 AVIC's Statistics
 
-The bot is currently serving **${users.toLocaleString()}** users across **${servers.toLocaleString()}** servers, managing a total of **${channels.toLocaleString()}** channels. It has been running continuously for **${uptimeString}** with a websocket latency of **${ping}ms**.
+Comprehensive real-time overview of **AVIC**'s operational status, resource usage, and shard distribution across the network.
 
-Running on **1** shard, this server is routed through **Shard ${shard}**. The bot is consuming **${ram} MB** of memory, powered by **Node.js ${node}** and **discord.js v${djs}**. A total of **${commands}** commands are loaded and operational.`
-            );embed.setThumbnail(client.user.displayAvatarURL({ dynamic: true }));
+The bot is currently serving **${users.toLocaleString()}** users across **${servers.toLocaleString()}** servers, managing a total of **${channels.toLocaleString()}** channels.
 
-        embed.setFooter({
-            text: `Requested by ${message.author.username} • ${new Date().toLocaleString()}`,
-            iconURL: message.author.displayAvatarURL({ dynamic: true })
-        });
+It has been running continuously for **${uptimeString}** with a websocket latency of **${ping}ms**.
 
-        const row1 = new ActionRowBuilder().addComponents(
+Running on **1** shard, this server is routed through **Shard ${shard}**.
 
-            new ButtonBuilder()
-                .setLabel("Status")
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://status.avicbot.xyz"),
+The bot is consuming **${ram} MB** of memory, powered by **Node.js ${node}** and **discord.js v${djs}**.
 
-            new ButtonBuilder()
-                .setLabel("Website")
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app")
-        );
+A total of **${commands}** commands are loaded and operational.`
+            )
+            .setFooter({
+                text: `Requested by ${message.author.username}`,
+                iconURL: message.author.displayAvatarURL({
+                    dynamic: true
+                })
+            });
 
-        const row2 = new ActionRowBuilder().addComponents(
-
-            new ButtonBuilder()
-                .setLabel("Docs")
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app"),
-
-            new ButtonBuilder()
-                .setLabel("Support Server")
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://discord.gg/HRE4N4zJHK")
-        );
-        const row1 = new ActionRowBuilder().addComponents(
+        const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setLabel("Status")
                 .setStyle(ButtonStyle.Link)
@@ -98,24 +94,21 @@ Running on **1** shard, this server is routed through **Shard ${shard}**. The bo
             new ButtonBuilder()
                 .setLabel("Website")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app")
-        );
+                .setURL("https://avicbot.vercel.app"),
 
-        const row2 = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setLabel("Docs")
+                .setLabel("Documentation")
                 .setStyle(ButtonStyle.Link)
                 .setURL("https://avicbot.vercel.app"),
 
             new ButtonBuilder()
-                .setLabel("Support Server")
+                .setLabel("Support")
                 .setStyle(ButtonStyle.Link)
                 .setURL("https://discord.gg/HRE4N4zJHK")
         );
-
-        return message.reply({
+return message.reply({
             embeds: [embed],
-            components: [row1, row2]
+            components: [row]
         });
 
     }
