@@ -2,14 +2,16 @@ const { EmbedBuilder } = require("discord.js");
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
-const OWNER_ID = "1306606920836055043";
-
+const OWNER_IDS = [
+    "1306606920836055043",
+    "1530872106399567941"
+];
 module.exports = {
     name: "noprefix",
 
     async execute(message, args) {
 
-        if (message.author.id !== OWNER_ID) {
+        if (!OWNER_IDS.includes(message.author.id)) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
