@@ -56,35 +56,30 @@ module.exports = {
         const endTime = Date.now() + ms(duration);
 
               const embed = new EmbedBuilder()
-            .setColor("#D3D3D3")
-            .setTitle("🎉 Giveaway")
-            .setDescription(
-`## 🎁 ${prize}
+.setColor("#2fd6d6")
+.setTitle("<:gift:1514705355412865136> Giveaway <:gift:1514705355412865136>")
+.setDescription(
+`## <:gwy3:1514705349859606548> ${prize} <:gwy3:1514705349859606548>
 
-> 👑 **Host:** ${message.author}
-> 👥 **Winners:** **${winners}**
-> 🎟️ **Entries:** **0**
-> ⏰ **Ends:** <t:${Math.floor(endTime / 1000)}:R>
+<a:BlackDot:1514727923175657654> **Hosted by:** ${message.author}
 
-Click the **🎉 Join Giveaway** button below to enter.
-
-Good luck everyone! 🍀`
+<a:BlackDot:1514727923175657654> **Winner(s):** ${winnerCount}`
             )
             .setFooter({
-                text: `AVIC Giveaway System`,
+                text: `Ends | <t:${Math.floor(endTime/1000)}:f>`,
                 iconURL: message.client.user.displayAvatarURL()
             })
             .setTimestamp(endTime);
 
         const row = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId("giveaway_join")
-                    .setEmoji("🎉")
-                    .setLabel("Join Giveaway")
-                    .setStyle(ButtonStyle.Success)
-            );
-
+.addComponents(
+new ButtonBuilder()
+.setCustomId("giveaway_join")
+.setEmoji("<a:giveaway:1514859685826793504>")
+.setLabel(`${giveaway.entries.length}`)
+.setStyle(ButtonStyle.Success)
+);
+        
         const giveawayMessage = await message.channel.send({
             embeds: [embed],
             components: [row]
@@ -107,11 +102,11 @@ Good luck everyone! 🍀`
                 new EmbedBuilder()
                     .setColor("#57F287")
                     .setDescription(
-                        `<:Tick:1514714190500335677> Giveaway created successfully!\n\n` +
-                        `> 🎁 **Prize:** ${prize}\n` +
-                        `> 👥 **Winners:** ${winners}\n` +
-                        `> ⏰ **Ends:** <t:${Math.floor(endTime / 1000)}:R>\n` +
-                        `> 📍 **Message:** ${giveawayMessage.url}`
+                        `<:tickYes:1525459366990315570> Giveaway created successfully!\n\n` +
+                        `>  **Prize:** ${prize}\n` +
+                        `>  **Winners:** ${winners}\n` +
+                        `>  **Ends:** <t:${Math.floor(endTime / 1000)}:R>\n` +
+                        `>  **Message:** ${giveawayMessage.url}`
                     )
             ]
         });
