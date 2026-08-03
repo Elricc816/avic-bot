@@ -1,3 +1,6 @@
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+const { EmbedBuilder } = require("discord.js");
 const {
     ModalBuilder,
     TextInputBuilder,
@@ -16,6 +19,59 @@ module.exports = (client) => {
         // =========================
 
         if (interaction.isButton()) {
+
+            // =========================
+// GIVEAWAY JOIN
+// =========================
+
+if (interaction.customId === "giveaway_join") {
+
+    const giveaway = await db.get(`giveaway_${interaction.message.id}`);
+
+    if (!giveaway) {
+        return interaction.reply({
+            content: "❌ Giveaway not found.",
+            ephemeral: true
+        });
+    }
+
+    if (giveaway.ended) {
+        return interaction.reply({
+            content: "❌ This giveaway has already ended.",
+            ephemeral: true
+        });
+    }
+
+    if (giveaway.entries.includes(interaction.user.id)) {
+        return interaction.reply({
+            content: "❌ You have already joined this giveaway.",
+            ephemeral: true
+        });
+    }
+
+    giveaway.entries.push(interaction.user.id);
+
+    await db.set(`giveaway_${interaction.message.id}`, giveaway);
+
+    const embed = EmbedBuilder.from(interaction.message.embeds[0]);
+
+    embed.setDescription(
+`## 🎁 ${giveaway.prize}
+
+> 👑 **Host:** <@${giveaway.hostId}>
+> 👥 **Winners:** **${giveaway.winners}**
+> 🎟️ **Entries:** **${giveaway.entries.length}**
+> ⏰ **Ends:** <t:${Math.floor(giveaway.endTime / 1000)}:R>
+
+Click the **🎉 Join Giveaway** button below to enter.
+
+Good luck everyone! 🍀`
+    );
+
+    await interaction.update({
+        embeds: [embed]
+    });
+}
 
             // ABOUT MODAL
             if (interaction.customId === "about_edit") {
