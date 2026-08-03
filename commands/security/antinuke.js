@@ -83,7 +83,7 @@ module.exports = {
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                     .setCustomId('delete')
-                    .setEmoji('🗑️')
+                    .setEmoji('<:delete:1533526007112400956>')
                     .setStyle(ButtonStyle.Danger)
             );
 
