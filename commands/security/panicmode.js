@@ -85,27 +85,27 @@ const row = new ActionRowBuilder()
   .addComponents(
     new ButtonBuilder()
       .setCustomId('first')
-      .setEmoji('⏪')
+      .setEmoji('<:backward:1533527358500503703>')
       .setStyle(ButtonStyle.Secondary),
 
     new ButtonBuilder()
       .setCustomId('previous')
-      .setEmoji('◀️')
+      .setEmoji('<:previous:1533532115311005817>')
       .setStyle(ButtonStyle.Secondary),
 
     new ButtonBuilder()
       .setCustomId('delete')
-      .setEmoji('🗑️')
+      .setEmoji('<:delete:1533526007112400956>')
       .setStyle(ButtonStyle.Danger),
 
     new ButtonBuilder()
       .setCustomId('next')
-      .setEmoji('▶️')
+      .setEmoji('<:next:1533532139415408881>')
       .setStyle(ButtonStyle.Secondary),
 
     new ButtonBuilder()
       .setCustomId('last')
-      .setEmoji('⏩')
+      .setEmoji('<:forward:1533527377727066214>')
       .setStyle(ButtonStyle.Secondary)
   );
 
