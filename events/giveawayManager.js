@@ -57,23 +57,27 @@ module.exports = (client) => {
             }
 
             const endedEmbed = new EmbedBuilder()
-                .setColor("#D3D3D3")
-                .setTitle("🎉 Giveaway Ended")
-                .setDescription(
-`## 🎁 ${g.prize}
+.setColor("#2fd6d6")
+.setTitle("<:gwy3:1514705349859606548> Giveaway Ended <:gwy3:1514705349859606548>")
+.setDescription(
+`## <:gift:1514705355412865136> ${g.prize} <:gift:1514705355412865136>
 
-👑 Host: <@${g.hostId}>
+<a:BlackDot:1514727923175657654> **Hosted by:** <@${g.hostId}>
+<a:BlackDot:1514727923175657654> **Total participant(s):** ${g.entries.length}
 
-🏆 Winner(s):
-${winners.length ? winners.map(x => `<@${x}>`).join("\n") : "No valid entries."}`
-                );
+<:dot:YOUR_DOT_EMOJI> **Winner:**
+
+${winners.length ? winners.map(x => `<@${x}>`).join("\n") : "No valid entries."}
+
+Ended | <t:${Math.floor(Date.now()/1000)}:f>`
+);
 
             const row = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
                         .setCustomId("giveaway_ended")
                         .setLabel("Giveaway Ended")
-                        .setEmoji("🔒")
+                        .setEmoji("<:timerr:1514699712681218094>")
                         .setDisabled(true)
                         .setStyle(ButtonStyle.Secondary)
                 );
@@ -85,7 +89,7 @@ ${winners.length ? winners.map(x => `<@${x}>`).join("\n") : "No valid entries."}
 
             if (winners.length) {
                 channel.send(
-                    `🎉 Congratulations ${winners.map(x => `<@${x}>`).join(", ")}! You won **${g.prize}**!`
+                    `<a:giveaway:1514859685826793504> Congratulations ${winners.map(x => `<@${x}>`).join(", ")}! You won **${g.prize}**!`
                 );
             }
 
