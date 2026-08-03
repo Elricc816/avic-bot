@@ -65,7 +65,7 @@ module.exports = (client) => {
 <a:BlackDot:1514727923175657654> **Hosted by:** <@${g.hostId}>
 <a:BlackDot:1514727923175657654> **Total participant(s):** ${g.entries.length}
 
-<:dot:YOUR_DOT_EMOJI> **Winner:**
+<a:BlackDot:1514727923175657654> **Winner:**
 
 ${winners.length ? winners.map(x => `<@${x}>`).join("\n") : "No valid entries."}
 
@@ -73,15 +73,14 @@ Ended | <t:${Math.floor(Date.now()/1000)}:f>`
 );
 
             const row = new ActionRowBuilder()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId("giveaway_ended")
-                        .setLabel("Giveaway Ended")
-                        .setEmoji("<:timerr:1514699712681218094>")
-                        .setDisabled(true)
-                        .setStyle(ButtonStyle.Secondary)
-                );
-
+.addComponents(
+new ButtonBuilder()
+.setCustomId("giveaway_ended")
+.setEmoji("<:timerr:1514699712681218094>")
+.setLabel(`${g.entries.length}`)
+.setDisabled(true)
+.setStyle(ButtonStyle.Secondary)
+);
             await msg.edit({
                 embeds: [endedEmbed],
                 components: [row]
