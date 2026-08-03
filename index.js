@@ -73,7 +73,9 @@ for (const folder of commandFolders) {
 }
 
 client.once('ready', () => {
-    console.log(`🤖 Elara Bot logged in as ${client.user.tag}`);
+    console.log(`🤖 Avic Bot logged in as ${client.user.tag}`);
+
+  require("./events/giveawayManager")(client);
 
     const updateStatus = () => {
     const servers = client.guilds.cache.size;
