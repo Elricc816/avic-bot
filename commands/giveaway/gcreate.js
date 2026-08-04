@@ -85,7 +85,7 @@ module.exports = {
             .setTimestamp();
 
         const giveawayMessage = await message.channel.send({
-    content: "<a:gwyy:1534265842248847422> **Giveaway** <a:gwyy:1534265842248847422>",
+    content: "<a:gwyy:1534265842248847422> **New Giveaway** <a:gwyy:1534265842248847422>",
     embeds: [embed]
 });
 
