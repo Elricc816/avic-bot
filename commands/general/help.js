@@ -43,7 +43,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor('#808080')
       .setDescription(
-`### Hey , This is **Avic**
+`### Hey, This is **Avic**
 
 <:white_arrow:1514714190231769219> A powerful, multi-purpose Discord bot built for **server security**, **moderation**, **high-fidelity utility tools** and much more.
 
@@ -89,7 +89,7 @@ Upgrade to Avic Premium for exclusive features ! <:diamond:1514699495768592635>
 )
 
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-      .setImage('https://cdn.discordapp.com/attachments/1525384165426598030/1532413355837620377/Screenshot_20260730-204448_Gallery.jpg?ex=6a6cc2a6&is=6a6b7126&hm=7507abf741eae1e3515bf709f5113ac8d65b8dbbfce6bad7c22b284e4ece01b3&')
+      .setImage('https://cdn.discordapp.com/attachments/1495463052328440048/1534271901839392849/Screenshot_20260731-220249_CapCut.jpg?ex=6a73858e&is=6a72340e&hm=dc9a1670cfc353667dd058de301e0c43b9e7b8c4fcb038876491a98ba3056103&')
 
       .setFooter({
         text: `Executed by ${message.author.username}`,
