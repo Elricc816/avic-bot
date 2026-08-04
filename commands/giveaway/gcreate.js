@@ -70,7 +70,7 @@ module.exports = {
             const embed = new EmbedBuilder()
             .setColor("#2FD6D6")
                 .setThumbnail(message.guild.iconURL({ dynamic: true, size: 1024 }))
-               .setTitle("<:gift:1514705368759144640> ${prize} <:gift:1514705368759144640>")
+               .setTitle(`<:gift:1514705368759144640> ${prize} <:gift:1514705368759144640>`)
             .setDescription(
 `<a:BlackDot:1514727923175657654> **Hosted by:** ${message.author}
 <a:BlackDot:1514727923175657654> **Winner(s):** ${winnerCount}
