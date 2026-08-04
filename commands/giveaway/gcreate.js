@@ -1,8 +1,5 @@
 const {
     EmbedBuilder,
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
     PermissionFlagsBits
 } = require("discord.js");
 
@@ -13,6 +10,7 @@ const db = new QuickDB();
 
 module.exports = {
     name: "gcreate",
+    aliases: ["giveawaycreate"],
 
     async execute(message, args) {
 
@@ -31,85 +29,84 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor("#D3D3D3")
-                        .setTitle("🎉 Giveaway Usage")
+                        .setTitle("<:gift:1514705368759144640> Giveaway Usage")
                         .setDescription(
-                            "` ,gcreate <duration> <winners> <prize> `\n\n" +
-                            "**Example:**\n" +
-                            "`,gcreate 1h 1 Discord Nitro`"
+"`,gcreate <duration> <winners> <prize>`
+
+**Example**
+`,gcreate 1h 1 Discord Nitro`
                         )
                 ]
             });
         }
 
         const duration = args[0];
-        const winners = parseInt(args[1]);
-        const prize = args.slice(2).join(" ");
 
         if (!ms(duration)) {
-            return message.reply("❌ Invalid duration.");
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#FF7F7F")
+                        .setDescription("<a:spider_cross:1514728338701287640> Invalid duration.\nExample: `10m`, `1h`, `2d`, `1w`")
+                ]
+            });
         }
 
-        if (isNaN(winners) || winners < 1) {
-            return message.reply("❌ Winners must be at least 1.");
+        const winnerCount = parseInt(args[1]);
+
+        if (isNaN(winnerCount) || winnerCount < 1) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#FF7F7F")
+                        .setDescription("<a:spider_cross:1514728338701287640> Winners must be greater than **0**.")
+                ]
+            });
         }
 
-        const endTime = Date.now() + ms(duration);
+        const prize = args.slice(2).join(" ");
 
-              const embed = new EmbedBuilder()
-.setColor("#2fd6d6")
-.setTitle("<:gift:1514705355412865136> Giveaway <:gift:1514705355412865136>")
-.setDescription(
+        const endTimestamp = Math.floor(
+            (Date.now() + ms(duration)) / 1000
+        );
+
+            const embed = new EmbedBuilder()
+            .setColor("#2FD6D6")
+                .setThumbnail(message.guild.iconURL({ dynamic: true, size: 1024 }))
+            .setDescription(
 `## <:gwy3:1514705349859606548> ${prize} <:gwy3:1514705349859606548>
 
 <a:BlackDot:1514727923175657654> **Hosted by:** ${message.author}
+<a:BlackDot:1514727923175657654> **Winner(s):** ${winnerCount}
+<a:BlackDot:1514727923175657654> **Ends:** <t:${endTimestamp}:F>
 
-<a:BlackDot:1514727923175657654> **Winner(s):** ${winnerCount}`
+<a:BlackDot:1514727923175657654> React with **<a:giveaway:1514859685826793504>** below to participate.`
             )
             .setFooter({
-                text: `Ends | <t:${Math.floor(endTime/1000)}:f>`,
-                iconURL: message.client.user.displayAvatarURL()
+                text: "Developed by Elric"
             })
-            .setTimestamp(endTime);
+            .setTimestamp();
 
-        const row = new ActionRowBuilder()
-.addComponents(
-new ButtonBuilder()
-.setCustomId("giveaway_join")
-.setEmoji("<a:giveaway:1514859685826793504>")
-.setLabel(`${giveaway.entries.length}`)
-.setStyle(ButtonStyle.Success)
-);
-        
         const giveawayMessage = await message.channel.send({
-            embeds: [embed],
-            components: [row]
+    content: "<a:Giveawaygift:1514859691170070609> Giveaway <a:Giveawaygift:1514859691170070609>",
+    embeds: [embed]
+});
         });
+
+        await giveawayMessage.react("<a:giveaway:1514859685826793504>");
 
         await db.set(`giveaway_${giveawayMessage.id}`, {
             guildId: message.guild.id,
             channelId: message.channel.id,
             messageId: giveawayMessage.id,
             hostId: message.author.id,
-            prize,
-            winners,
-            endTime,
-            ended: false,
-            entries: []
+            prize: prize,
+            winnerCount: winnerCount,
+            endTime: Date.now() + ms(duration),
+            ended: false
         });
 
-              return message.reply({
-            embeds: [
-                new EmbedBuilder()
-                    .setColor("#57F287")
-                    .setDescription(
-                        `<:tickYes:1525459366990315570> Giveaway created successfully!\n\n` +
-                        `>  **Prize:** ${prize}\n` +
-                        `>  **Winners:** ${winners}\n` +
-                        `>  **Ends:** <t:${Math.floor(endTime / 1000)}:R>\n` +
-                        `>  **Message:** ${giveawayMessage.url}`
-                    )
-            ]
-        });
+            
 
     }
 };
