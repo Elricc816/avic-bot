@@ -91,9 +91,8 @@ module.exports = {
     content: "<a:Giveawaygift:1514859691170070609> Giveaway <a:Giveawaygift:1514859691170070609>",
     embeds: [embed]
 });
-        });
 
-        await giveawayMessage.react("<a:giveaway:1514859685826793504>");
+       await giveawayMessage.react("<a:giveaway:1514859685826793504>");
 
         await db.set(`giveaway_${giveawayMessage.id}`, {
             guildId: message.guild.id,
