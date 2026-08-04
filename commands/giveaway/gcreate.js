@@ -31,7 +31,7 @@ module.exports = {
                         .setColor("#D3D3D3")
                         .setTitle("<:gift:1514705368759144640> Giveaway Usage")
                         .setDescription(
-"`,gcreate <duration> <winners> <prize>`
+"`,gcreate <duration> <winners> <prize>`"
 
 **Example**
 `,gcreate 1h 1 Discord Nitro`
