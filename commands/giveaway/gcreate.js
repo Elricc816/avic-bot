@@ -71,7 +71,7 @@ module.exports = {
             .setColor("#2FD6D6")
                 .setThumbnail(message.guild.iconURL({ dynamic: true, size: 1024 }))
             .setDescription(
-`## <:gwy3:1514705349859606548> ${prize} <:gwy3:1514705349859606548>
+`## <a:Giveawaygift:1514859691170070609> ${prize} <a:Giveawaygift:1514859691170070609>
 
 <a:BlackDot:1514727923175657654> **Hosted by:** ${message.author}
 <a:BlackDot:1514727923175657654> **Winner(s):** ${winnerCount}
@@ -85,7 +85,7 @@ module.exports = {
             .setTimestamp();
 
         const giveawayMessage = await message.channel.send({
-    content: "<a:Giveawaygift:1514859691170070609> **Giveaway** <a:Giveawaygift:1514859691170070609>",
+    content: "<a:gwyy:1534265842248847422> **Giveaway** <a:gwyy:1534265842248847422>",
     embeds: [embed]
 });
 
