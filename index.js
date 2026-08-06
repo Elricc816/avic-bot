@@ -24,14 +24,14 @@ setInterval(() => {
 }, 60000);
 
 const client = new Client({
-  
   intents: [
-  GatewayIntentBits.Guilds,
-GatewayIntentBits.GuildMessages,
-GatewayIntentBits.MessageContent,
-GatewayIntentBits.GuildMembers,
-GatewayIntentBits.GuildPresences
-]
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildVoiceStates
+  ]
 });
 
 client.commands = new Collection();
