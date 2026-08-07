@@ -1,17 +1,25 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 
+function errorEmbed(text) {
+  return new EmbedBuilder()
+    .setColor('#ED4245')
+    .setDescription(`<:WarningIcon:1514708751385497721> ${text}`);
+}
+
 module.exports = {
   name: 'softban',
   async execute(message, args, client) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      return message.reply('<:WarningIcon:1514708751385497721> You don\'t have permission to softban members.');
+      return message.reply({ embeds: [errorEmbed("You don't have permission to softban members.")] });
     }
 
     const target = message.mentions.members.first();
-    if (!target) return message.reply('<:WarningIcon:1514708751385497721> Mention a user to softban.');
+    if (!target) {
+      return message.reply({ embeds: [errorEmbed('Mention a user to softban.')] });
+    }
 
     if (!target.bannable) {
-      return message.reply('<:WarningIcon:1514708751385497721> I can\'t softban this user (role too high or missing permissions).');
+      return message.reply({ embeds: [errorEmbed("I can't softban this user (role too high or missing permissions).")] });
     }
 
     const reason = args.slice(1).join(' ') || 'No reason provided';
@@ -31,7 +39,6 @@ module.exports = {
       // DMs closed — continue anyway
     }
 
-    // Ban with 1 day of message deletion, then immediately unban
     await target.ban({ reason, deleteMessageSeconds: 60 * 60 * 24 });
     await message.guild.members.unban(target.id, 'Softban - auto unban');
 
