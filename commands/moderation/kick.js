@@ -1,17 +1,25 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 
+function errorEmbed(text) {
+  return new EmbedBuilder()
+    .setColor('#FAA61A')
+    .setDescription(`<:WarningIcon:1514708751385497721> ${text}`);
+}
+
 module.exports = {
   name: 'kick',
   async execute(message, args, client) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      return message.reply('<:WarningIcon:1514708751385497721> You don\'t have permission to kick members.');
+      return message.reply({ embeds: [errorEmbed("You don't have permission to kick members.")] });
     }
 
     const target = message.mentions.members.first();
-    if (!target) return message.reply('<:WarningIcon:1514708751385497721> Mention a user to kick.');
+    if (!target) {
+      return message.reply({ embeds: [errorEmbed('Mention a user to kick.')] });
+    }
 
     if (!target.kickable) {
-      return message.reply('<:WarningIcon:1514708751385497721> I can\'t kick this user (role too high or missing permissions).');
+      return message.reply({ embeds: [errorEmbed("I can't kick this user (role too high or missing permissions).")] });
     }
 
     const reason = args.slice(1).join(' ') || 'No reason provided';
