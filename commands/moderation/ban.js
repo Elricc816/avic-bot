@@ -1,49 +1,47 @@
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+
 module.exports = {
-  name: "ban",
-  async execute(message, args) {
-
-    if (!message.member.permissions.has("BanMembers")) {
-      return message.reply("❌ You don't have permission to ban members!");
+  name: 'ban',
+  async execute(message, args, client) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
+      return message.reply('<:WarningIcon:1514708751385497721> You don\'t have permission to ban members.');
     }
 
-    const user = message.mentions.members.first();
+    const target = message.mentions.members.first();
+    if (!target) return message.reply('<:WarningIcon:1514708751385497721> Mention a user to ban.');
 
-    if (!user) {
-      return message.reply("❌ Please mention a user to ban!");
+    if (!target.bannable) {
+      return message.reply('<:WarningIcon:1514708751385497721> I can\'t ban this user (role too high or missing permissions).');
     }
 
-    if (user.id === message.author.id) {
-      return message.reply("❌ You can't ban yourself!");
-    }
+    const reason = args.slice(1).join(' ') || 'No reason provided';
 
-    if (!user.bannable) {
-      return message.reply("❌ I cannot ban this user!");
-    }
-
-    // optional reason
-    const reason = args.slice(1).join(" ");
-
-    let dmFailed = false;
-
-    // DM user before ban
-    try {
-      await user.send(
-        reason
-          ? `🔨 You have been banned from **${message.guild.name}** server\nReason: ${reason}`
-          : `🔨 You have been banned from **${message.guild.name}** server`
+    const dmEmbed = new EmbedBuilder()
+      .setColor('#ED4245')
+      .setTitle('<:WarningIcon:1514708751385497721> You have been banned')
+      .setDescription(
+        `<:arrow:1514699753462566953> **Server** • ${message.guild.name}\n` +
+        `<:info:1514699288674828310> **Reason** • ${reason}`
       );
+
+    try {
+      await target.send({ embeds: [dmEmbed] });
     } catch (err) {
-      dmFailed = true;
+      // User has DMs closed — ignore and continue with the ban
     }
 
-    // ban user
-    await user.ban({ reason: reason || "No reason provided" });
+    await target.ban({ reason });
 
-    // server reply
-    message.reply(
-      `🔨 Successfully banned **${user.user.tag}**` +
-      (reason ? `\nReason: ${reason}` : "") +
-      (dmFailed ? "\n⚠️ Could not DM user" : "")
-    );
-  }
+    const embed = new EmbedBuilder()
+      .setColor('#ED4245')
+      .setTitle('<:WarningIcon:1514708751385497721> Member Banned')
+      .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
+      .setDescription(
+        `<:arrow:1514699753462566953> **User** • ${target.user.tag}\n` +
+        `<:info:1514699288674828310> **Reason** • ${reason}\n` +
+        `<:arrow:1514699753462566953> **Moderator** • ${message.author.tag}`
+      );
+
+    message.reply({ embeds: [embed] });
+  },
 };
