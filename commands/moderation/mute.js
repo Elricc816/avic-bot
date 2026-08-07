@@ -1,72 +1,57 @@
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const ms = require('ms');
+
 module.exports = {
-  name: "mute",
-  async execute(message, args) {
-
-    if (!message.member.permissions.has("ModerateMembers")) {
-      return message.reply("❌ You don't have permission to mute members!");
+  name: 'mute',
+  async execute(message, args, client) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
+      return message.reply('<:WarningIcon:1514708751385497721> You don\'t have permission to mute members.');
     }
 
-    const user = message.mentions.members.first();
+    const target = message.mentions.members.first();
+    if (!target) return message.reply('<:WarningIcon:1514708751385497721> Mention a user to mute.');
 
-    const time = args[1];
+    if (!target.moderatable) {
+      return message.reply('<:WarningIcon:1514708751385497721> I can\'t mute this user (role too high or missing permissions).');
+    }
 
-    if (!user || !time) {
-      return message.reply(
-        "❌ Wrong format!\n" +
-        "Correct usage:\n" +
-        "`!mute @user 10m`\n" +
-        "`!mute @user 1h`\n" +
-        "`!mute @user 1d`"
+    const durationArg = args[1];
+    const duration = durationArg ? ms(durationArg) : ms('10m');
+
+    if (!duration || duration > ms('28d')) {
+      return message.reply('<:WarningIcon:1514708751385497721> Invalid duration (e.g. 10m, 1h, 1d) — max 28 days.');
+    }
+
+    const reason = args.slice(2).join(' ') || 'No reason provided';
+
+    const dmEmbed = new EmbedBuilder()
+      .setColor('#D3D3D3')
+      .setTitle('<:WarningIcon:1514708751385497721> You have been muted')
+      .setDescription(
+        `<:arrow:1514699753462566953> **Server** • ${message.guild.name}\n` +
+        `<:arrow:1514699753462566953> **Duration** • ${durationArg || '10m'}\n` +
+        `<:info:1514699288674828310> **Reason** • ${reason}`
       );
-    }
 
-    if (user.id === message.author.id) {
-      return message.reply("❌ You can't mute yourself!");
-    }
-
-    if (!user.moderatable) {
-      return message.reply("❌ I cannot mute this user!");
-    }
-
-    // convert time
-    let duration;
-
-    if (time.endsWith("m")) {
-      duration = parseInt(time) * 60 * 1000;
-    } 
-    else if (time.endsWith("h")) {
-      duration = parseInt(time) * 60 * 60 * 1000;
-    } 
-    else if (time.endsWith("d")) {
-      duration = parseInt(time) * 24 * 60 * 60 * 1000;
-    } 
-    else {
-      return message.reply("❌ Invalid time format! Use: `10m`, `1h`, `1d`");
-    }
-
-    let dmFailed = false;
-
-    // 🔊 DM USER FIRST
     try {
-      await user.send(
-        `🔇 You have been muted in **${message.guild.name}** for **${time}**`
-      );
+      await target.send({ embeds: [dmEmbed] });
     } catch (err) {
-      dmFailed = true;
+      // DMs closed — continue anyway
     }
 
-    // mute user
-    try {
-      await user.timeout(duration, "Muted by Elio bot");
+    await target.timeout(duration, reason);
 
-      message.reply(
-        `🔇 **${user.user.tag}** muted for **${time}**` +
-        (dmFailed ? "\n⚠️ Could not DM user" : "")
+    const embed = new EmbedBuilder()
+      .setColor('#D3D3D3')
+      .setTitle('<:WarningIcon:1514708751385497721> Member Muted')
+      .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
+      .setDescription(
+        `<:arrow:1514699753462566953> **User** • ${target.user.tag}\n` +
+        `<:arrow:1514699753462566953> **Duration** • ${durationArg || '10m'}\n` +
+        `<:info:1514699288674828310> **Reason** • ${reason}\n` +
+        `<:arrow:1514699753462566953> **Moderator** • ${message.author.tag}`
       );
 
-    } catch (err) {
-      console.log(err);
-      message.reply("❌ Failed to mute user");
-    }
-  }
+    message.reply({ embeds: [embed] });
+  },
 };
