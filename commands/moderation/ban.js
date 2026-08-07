@@ -1,17 +1,25 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 
+function errorEmbed(text) {
+  return new EmbedBuilder()
+    .setColor('#ED4245')
+    .setDescription(`<:WarningIcon:1514708751385497721> ${text}`);
+}
+
 module.exports = {
   name: 'ban',
   async execute(message, args, client) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      return message.reply('<:WarningIcon:1514708751385497721> You don\'t have permission to ban members.');
+      return message.reply({ embeds: [errorEmbed("You don't have permission to ban members.")] });
     }
 
     const target = message.mentions.members.first();
-    if (!target) return message.reply('<:WarningIcon:1514708751385497721> Mention a user to ban.');
+    if (!target) {
+      return message.reply({ embeds: [errorEmbed('Mention a user to ban.')] });
+    }
 
     if (!target.bannable) {
-      return message.reply('<:WarningIcon:1514708751385497721> I can\'t ban this user (role too high or missing permissions).');
+      return message.reply({ embeds: [errorEmbed("I can't ban this user (role too high or missing permissions).")] });
     }
 
     const reason = args.slice(1).join(' ') || 'No reason provided';
@@ -27,7 +35,7 @@ module.exports = {
     try {
       await target.send({ embeds: [dmEmbed] });
     } catch (err) {
-      // User has DMs closed — ignore and continue with the ban
+      // DMs closed — continue anyway
     }
 
     await target.ban({ reason });
