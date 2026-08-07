@@ -70,13 +70,13 @@ module.exports = {
             const embed = new EmbedBuilder()
             .setColor("#2FD6D6")
                 .setThumbnail(message.guild.iconURL({ dynamic: true, size: 1024 }))
-               .setTitle(`<:gift:1514705368759144640> ${prize} <:gift:1514705368759144640>`)
+               .setTitle(`<a:giftt:1535203788913119272> ${prize} <a:giftt:1535203788913119272>`)
             .setDescription(
 `<a:BlackDot:1514727923175657654> **Hosted by:** ${message.author}
 <a:BlackDot:1514727923175657654> **Winner(s):** ${winnerCount}
 <a:BlackDot:1514727923175657654> **Ends:** <t:${endTimestamp}:F>
 
-<a:BlackDot:1514727923175657654> React with **<a:giveaway:1514859685826793504>** below to participate.`
+<a:BlackDot:1514727923175657654> React with **<a:booper:1535203898485112862>** below to participate.`
             )
             .setFooter({
                 text: "Developed by Elric"
@@ -88,7 +88,7 @@ module.exports = {
     embeds: [embed]
 });
 
-       await giveawayMessage.react("<a:giveaway:1514859685826793504>");
+       await giveawayMessage.react("<a:booper:1535203898485112862>");
 
         await db.set(`giveaway_${giveawayMessage.id}`, {
             guildId: message.guild.id,
