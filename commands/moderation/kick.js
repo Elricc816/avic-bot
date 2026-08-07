@@ -1,50 +1,48 @@
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+
 module.exports = {
-  name: "kick",
-  async execute(message, args) {
-
-    if (!message.member.permissions.has("KickMembers")) {
-      return message.reply("❌ You don't have permission to kick members!");
+  name: 'kick',
+  async execute(message, args, client) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
+      return message.reply('<:WarningIcon:1514708751385497721> You don\'t have permission to kick members.');
     }
 
-    const user = message.mentions.members.first();
+    const target = message.mentions.members.first();
+    if (!target) return message.reply('<:WarningIcon:1514708751385497721> Mention a user to kick.');
 
-    if (!user) {
-      return message.reply("❌ Use: `!kick @user [reason]`");
+    if (!target.kickable) {
+      return message.reply('<:WarningIcon:1514708751385497721> I can\'t kick this user (role too high or missing permissions).');
     }
 
-    if (user.id === message.author.id) {
-      return message.reply("❌ You can't kick yourself!");
-    }
+    const reason = args.slice(1).join(' ') || 'No reason provided';
 
-    if (!user.kickable) {
-      return message.reply("❌ I cannot kick this user!");
-    }
+    const dmEmbed = new EmbedBuilder()
+      .setColor('#FAA61A')
+      .setTitle('<:WarningIcon:1514708751385497721> You have been kicked')
+      .setDescription(
+        `<:arrow:1514699753462566953> **Server** • ${message.guild.name}\n` +
+        `<:info:1514699288674828310> **Reason** • ${reason}\n\n` +
+        `You are free to rejoin the server.`
+      );
 
-    // optional reason
-    const reason = args.slice(1).join(" ").trim();
-
-    // DM message (conditional)
     try {
-      if (reason) {
-        await user.send(
-          `👢 You have been kicked from **${message.guild.name}**\nReason: ${reason}`
-        );
-      } else {
-        await user.send(
-          `👢 You have been kicked from **${message.guild.name}**`
-        );
-      }
+      await target.send({ embeds: [dmEmbed] });
     } catch (err) {
-      console.log("Could not DM user");
+      // DMs closed — continue anyway
     }
 
-    // kick with or without reason
-    await user.kick(reason || "No reason provided");
+    await target.kick(reason);
 
-    // server message
-    message.reply(
-      `👢 **${user.user.tag}** has been kicked` +
-      (reason ? `\nReason: ${reason}` : "")
-    );
-  }
+    const embed = new EmbedBuilder()
+      .setColor('#FAA61A')
+      .setTitle('<:WarningIcon:1514708751385497721> Member Kicked')
+      .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
+      .setDescription(
+        `<:arrow:1514699753462566953> **User** • ${target.user.tag}\n` +
+        `<:info:1514699288674828310> **Reason** • ${reason}\n` +
+        `<:arrow:1514699753462566953> **Moderator** • ${message.author.tag}`
+      );
+
+    message.reply({ embeds: [embed] });
+  },
 };
