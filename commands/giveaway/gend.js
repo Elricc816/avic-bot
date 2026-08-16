@@ -1,19 +1,20 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 const { QuickDB } = require("quick.db");
 
 const db = new QuickDB();
 
 module.exports = {
     name: "gend",
+    aliases: ["giveawayend"],
 
     async execute(message, args) {
 
-        if (!message.member.permissions.has("ManageGuild")) {
+        if (!message.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor("#FF7F7F")
-                        .setDescription("<a:spider_cross:1514728338701287640> You need **Manage Server** permission.")
+                        .setDescription("<a:spider_cross:1514728338701287640> You need **Manage Server** permission to end giveaways.")
                 ]
             });
         }
@@ -21,28 +22,87 @@ module.exports = {
         const messageId = args[0];
 
         if (!messageId) {
-            return message.reply("Usage: `,gend <messageID>`");
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#D3D3D3")
+                        .setTitle("<:gift:1514705355412865136> Giveaway Usage")
+                        .setDescription("`,gend <message id>`")
+                ]
+            });
         }
 
         const giveaway = await db.get(`giveaway_${messageId}`);
 
-        if (!giveaway)
-            return message.reply("❌ Giveaway not found.");
+        if (!giveaway || giveaway.ended) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#FF7F7F")
+                        .setDescription("<a:spider_cross:1514728338701287640> No active giveaway found with that message ID.")
+                ]
+            });
+        }
 
-        if (giveaway.ended)
-            return message.reply("❌ Giveaway already ended.");
+        const channel = await message.guild.channels.fetch(giveaway.channelId).catch(() => null);
+        if (!channel) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#FF7F7F")
+                        .setDescription("<a:spider_cross:1514728338701287640> Couldn't find the giveaway channel.")
+                ]
+            });
+        }
 
-        giveaway.endTime = Date.now() - 1000;
+        const giveawayMessage = await channel.messages.fetch(giveaway.messageId).catch(() => null);
+        if (!giveawayMessage) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#FF7F7F")
+                        .setDescription("<a:spider_cross:1514728338701287640> Couldn't find the giveaway message.")
+                ]
+            });
+        }
 
-        await db.set(`giveaway_${messageId}`, giveaway);
+        const reaction = giveawayMessage.reactions.cache.get("booper:1535203898485112862");
+        const users = reaction ? await reaction.users.fetch() : new Map();
+        const entrants = [...users.values()].filter(u => !u.bot);
 
-        return message.reply({
-            embeds: [
-                new EmbedBuilder()
-                    .setColor("#57F287")
-                    .setDescription("<:Tick:1514714190500335677> Giveaway will end within **5 seconds**.")
-            ]
+        await db.set(`giveaway_${messageId}.ended`, true);
+
+        if (entrants.length === 0) {
+            const noWinnerEmbed = new EmbedBuilder()
+                .setColor("#FF7F7F")
+                .setTitle(`<a:giftt:1535203788913119272> ${giveaway.prize} <a:giftt:1535203788913119272>`)
+                .setDescription("<a:BlackDot:1514727923175657654> No valid entries — no winner could be selected.")
+                .setFooter({ text: "Developed by Elric" })
+                .setTimestamp();
+
+            return channel.send({ embeds: [noWinnerEmbed] });
+        }
+
+        const shuffled = entrants.sort(() => 0.5 - Math.random());
+        const winners = shuffled.slice(0, giveaway.winnerCount);
+
+        await db.set(`giveaway_${messageId}.winners`, winners.map(w => w.id));
+
+        const winnerEmbed = new EmbedBuilder()
+            .setColor("#2FD6D6")
+            .setTitle(`<a:giftt:1535203788913119272> ${giveaway.prize} <a:giftt:1535203788913119272>`)
+            .setDescription(
+`<a:BlackDot:1514727923175657654> **Winner(s):** ${winners.map(w => `${w}`).join(", ")}
+<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>`
+            )
+            .setFooter({ text: "Developed by Elric" })
+            .setTimestamp();
+
+        await channel.send({
+            content: `<a:gwyy:1534265842248847422> Congratulations ${winners.map(w => `${w}`).join(", ")}! You won **${giveaway.prize}**!`,
+            embeds: [winnerEmbed]
         });
 
-    }
-};
+        message.reply({
+            embeds: [
+                new
