@@ -1,99 +1,80 @@
+const { EmbedBuilder } = require("discord.js");
 const { QuickDB } = require("quick.db");
-const {
-    EmbedBuilder,
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle
-} = require("discord.js");
 
 const db = new QuickDB();
 
 module.exports = (client) => {
 
-    setInterval(async () => {
+    async function checkGiveaways() {
+        const all = await db.all();
+        const giveaways = all.filter(entry => entry.id.startsWith("giveaway_"));
 
-        const data = await db.all();
+        for (const entry of giveaways) {
+            const giveaway = entry.value;
 
-        const giveaways = data.filter(x =>
-            x.id.startsWith("giveaway_")
-        );
+            if (giveaway.ended) continue;
+            if (Date.now() < giveaway.endTime) continue;
 
-        for (const giveaway of giveaways) {
+            try {
+                const channel = await client.channels.fetch(giveaway.channelId).catch(() => null);
+                if (!channel) {
+                    await db.set(`${entry.id}.ended`, true);
+                    continue;
+                }
 
-            const g = giveaway.value;
+                const giveawayMessage = await channel.messages.fetch(giveaway.messageId).catch(() => null);
+                if (!giveawayMessage) {
+                    await db.set(`${entry.id}.ended`, true);
+                    continue;
+                }
 
-            if (g.ended) continue;
+                const reaction = giveawayMessage.reactions.cache.get("booper:1535203898485112862");
+                const users = reaction ? await reaction.users.fetch() : new Map();
+                const entrants = [...users.values()].filter(u => !u.bot);
 
-            if (Date.now() < g.endTime) continue;
+                await db.set(`${entry.id}.ended`, true);
 
-            g.ended = true;
+                if (entrants.length === 0) {
+                    const noWinnerEmbed = new EmbedBuilder()
+                        .setColor("#FF7F7F")
+                        .setTitle(`<a:giftt:1535203788913119272> ${giveaway.prize} <a:giftt:1535203788913119272>`)
+                        .setDescription("<a:BlackDot:1514727923175657654> No valid entries — no winner could be selected.")
+                        .setFooter({ text: "Developed by Elric" })
+                        .setTimestamp();
 
-            await db.set(giveaway.id, g);
+                    await channel.send({ embeds: [noWinnerEmbed] });
+                    continue;
+                }
 
-            const channel = await client.channels.fetch(g.channelId).catch(() => null);
+                const shuffled = entrants.sort(() => 0.5 - Math.random());
+                const winners = shuffled.slice(0, giveaway.winnerCount);
 
-            if (!channel) continue;
+                await db.set(`${entry.id}.winners`, winners.map(w => w.id));
 
-            const msg = await channel.messages.fetch(g.messageId).catch(() => null);
+                const winnerEmbed = new EmbedBuilder()
+                    .setColor("#2FD6D6")
+                    .setTitle(`<a:giftt:1535203788913119272> ${giveaway.prize} <a:giftt:1535203788913119272>`)
+                    .setDescription(
+`<a:BlackDot:1514727923175657654> **Winner(s):** ${winners.map(w => `${w}`).join(", ")}
+<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>`
+                    )
+                    .setFooter({ text: "Developed by Elric" })
+                    .setTimestamp();
 
-            if (!msg) continue;
+                await channel.send({
+                    content: `<a:gwyy:1534265842248847422> Congratulations ${winners.map(w => `${w}`).join(", ")}! You won **${giveaway.prize}**!`,
+                    embeds: [winnerEmbed]
+                });
 
-            const winners = [];
-
-            const entries = [...g.entries];
-
-            while (
-                winners.length < g.winners &&
-                entries.length > 0
-            ) {
-
-                const random = Math.floor(
-                    Math.random() * entries.length
-                );
-
-                winners.push(entries[random]);
-
-                entries.splice(random, 1);
+            } catch (err) {
+                console.error(`Failed to auto-end giveaway ${entry.id}:`, err);
             }
-
-            const endedEmbed = new EmbedBuilder()
-.setColor("#2fd6d6")
-.setTitle("<:gwy3:1514705349859606548> Giveaway Ended <:gwy3:1514705349859606548>")
-.setDescription(
-`## <:gift:1514705355412865136> ${g.prize} <:gift:1514705355412865136>
-
-<a:BlackDot:1514727923175657654> **Hosted by:** <@${g.hostId}>
-<a:BlackDot:1514727923175657654> **Total participant(s):** ${g.entries.length}
-
-<a:BlackDot:1514727923175657654> **Winner:**
-
-${winners.length ? winners.map(x => `<@${x}>`).join("\n") : "No valid entries."}
-
-Ended | <t:${Math.floor(Date.now()/1000)}:f>`
-);
-
-            const row = new ActionRowBuilder()
-.addComponents(
-new ButtonBuilder()
-.setCustomId("giveaway_ended")
-.setEmoji("<:timerr:1514699712681218094>")
-.setLabel(`${g.entries.length}`)
-.setDisabled(true)
-.setStyle(ButtonStyle.Secondary)
-);
-            await msg.edit({
-                embeds: [endedEmbed],
-                components: [row]
-            });
-
-            if (winners.length) {
-                channel.send(
-                    `<a:giveaway:1514859685826793504> Congratulations ${winners.map(x => `<@${x}>`).join(", ")}! You won **${g.prize}**!`
-                );
-            }
-
         }
+    }
 
-    }, 5000);
+    // Check every 15 seconds for giveaways that have expired
+    setInterval(checkGiveaways, 15000);
 
+    // Also run once immediately on startup, in case the bot was offline when a giveaway ended
+    checkGiveaways();
 };
