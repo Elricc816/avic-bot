@@ -16,7 +16,6 @@ module.exports = (client) => {
             if (Date.now() < giveaway.endTime) continue;
 
             try {
-                const guild = await client.guilds.fetch(giveaway.guildId).catch(() => null);
                 const channel = await client.channels.fetch(giveaway.channelId).catch(() => null);
                 if (!channel) {
                     await db.set(`${entry.id}.ended`, true);
@@ -35,19 +34,15 @@ module.exports = (client) => {
 
                 await db.set(`${entry.id}.ended`, true);
 
+                const originalEmbed = giveawayMessage.embeds[0];
+
                 if (entrants.length === 0) {
-                    const endedEmbed = new EmbedBuilder()
-                        .setColor("#FF7F7F")
-                        .setThumbnail(guild ? guild.iconURL({ dynamic: true, size: 1024 }) : null)
-                        .setTitle(`<a:giftt:1535203788913119272> ${giveaway.prize} <a:giftt:1535203788913119272>`)
+                    const endedEmbed = EmbedBuilder.from(originalEmbed)
                         .setDescription(
 `<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>
-<a:BlackDot:1514727923175657654> **Winner(s):** No valid entries
-
-<a:BlackDot:1514727923175657654> This giveaway has ended.`
-                        )
-                        .setFooter({ text: "Developed by Elric" })
-                        .setTimestamp();
+<a:BlackDot:1514727923175657654> **Winner(s):** ${giveaway.winnerCount}
+<a:BlackDot:1514727923175657654> No valid entries — no winner could be selected.`
+                        );
 
                     await giveawayMessage.edit({
                         content: "<a:gwyy:1534265842248847422> **Giveaway Ended** <a:gwyy:1534265842248847422>",
@@ -61,26 +56,16 @@ module.exports = (client) => {
 
                 await db.set(`${entry.id}.winners`, winners.map(w => w.id));
 
-                const endedEmbed = new EmbedBuilder()
-                    .setColor("#2FD6D6")
-                    .setThumbnail(guild ? guild.iconURL({ dynamic: true, size: 1024 }) : null)
-                    .setTitle(`<a:giftt:1535203788913119272> ${giveaway.prize} <a:giftt:1535203788913119272>`)
+                const endedEmbed = EmbedBuilder.from(originalEmbed)
                     .setDescription(
 `<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>
 <a:BlackDot:1514727923175657654> **Winner(s):** ${winners.map(w => `${w}`).join(", ")}
-
-<a:BlackDot:1514727923175657654> This giveaway has ended.`
-                    )
-                    .setFooter({ text: "Developed by Elric" })
-                    .setTimestamp();
+<a:BlackDot:1514727923175657654> Congratulations ${winners.map(w => `${w}`).join(", ")}! You won **${giveaway.prize}**!`
+                    );
 
                 await giveawayMessage.edit({
                     content: "<a:gwyy:1534265842248847422> **Giveaway Ended** <a:gwyy:1534265842248847422>",
                     embeds: [endedEmbed]
-                });
-
-                await channel.send({
-                    content: `<a:gwyy:1534265842248847422> Congratulations ${winners.map(w => `${w}`).join(", ")}! You won **${giveaway.prize}**!`
                 });
 
             } catch (err) {
