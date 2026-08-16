@@ -74,6 +74,7 @@ module.exports = {
 
         const originalEmbed = giveawayMessage.embeds[0];
         const jumpUrl = giveawayMessage.url;
+        const nowTimestamp = Math.floor(Date.now() / 1000);
 
         const linkRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
@@ -82,13 +83,16 @@ module.exports = {
                 .setURL(jumpUrl)
         );
 
+        let newDescription = originalEmbed.description
+            .replace(/\*\*Ends:\*\* <t:\d+:F>/, `**Ended:** <t:${nowTimestamp}:F>`);
+
         if (entrants.length === 0) {
-            const endedEmbed = EmbedBuilder.from(originalEmbed)
-                .setDescription(
-`<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>
-<a:BlackDot:1514727923175657654> **Winner(s):** ${giveaway.winnerCount}
-<a:BlackDot:1514727923175657654> No valid entries — no winner could be selected.`
-                );
+            newDescription = newDescription.replace(
+                /\*\*Winner\(s\):\*\* \d+/,
+                `**Winner(s):** No valid entries`
+            );
+
+            const endedEmbed = EmbedBuilder.from(originalEmbed).setDescription(newDescription);
 
             await giveawayMessage.edit({
                 content: "<a:gwyy:1534265842248847422> **Giveaway Ended** <a:gwyy:1534265842248847422>",
@@ -114,11 +118,12 @@ module.exports = {
 
         await db.set(`giveaway_${messageId}.winners`, winners.map(w => w.id));
 
-        const endedEmbed = EmbedBuilder.from(originalEmbed)
-            .setDescription(
-`<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>
-<a:BlackDot:1514727923175657654> **Winner(s):** ${winners.map(w => `${w}`).join(", ")}`
-            );
+        newDescription = newDescription.replace(
+            /\*\*Winner\(s\):\*\* \d+/,
+            `**Winner(s):** ${winners.map(w => `${w}`).join(", ")}`
+        );
+
+        const endedEmbed = EmbedBuilder.from(originalEmbed).setDescription(newDescription);
 
         await giveawayMessage.edit({
             content: "<a:gwyy:1534265842248847422> **Giveaway Ended** <a:gwyy:1534265842248847422>",
