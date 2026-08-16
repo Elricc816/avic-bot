@@ -80,7 +80,15 @@ module.exports = {
                 .setFooter({ text: "Developed by Elric" })
                 .setTimestamp();
 
-            return channel.send({ embeds: [noWinnerEmbed] });
+            await channel.send({ embeds: [noWinnerEmbed] });
+
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor("#D3D3D3")
+                        .setDescription("<a:BlackDot:1514727923175657654> Giveaway ended — no valid entries.")
+                ]
+            });
         }
 
         const shuffled = entrants.sort(() => 0.5 - Math.random());
@@ -105,4 +113,10 @@ module.exports = {
 
         message.reply({
             embeds: [
-                new
+                new EmbedBuilder()
+                    .setColor("#D3D3D3")
+                    .setDescription("<a:BlackDot:1514727923175657654> Giveaway ended successfully.")
+            ]
+        });
+    }
+};
