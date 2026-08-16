@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const { QuickDB } = require("quick.db");
 
 const db = new QuickDB();
@@ -28,13 +28,21 @@ module.exports = (client) => {
                     continue;
                 }
 
-                const reaction = giveawayMessage.reactions.cache.get("1535203898485112862");
+                const reaction = giveawayMessage.reactions.cache.find(r => r.emoji.id === "1535203898485112862");
                 const users = reaction ? await reaction.users.fetch() : new Map();
                 const entrants = [...users.values()].filter(u => !u.bot);
 
                 await db.set(`${entry.id}.ended`, true);
 
                 const originalEmbed = giveawayMessage.embeds[0];
+                const jumpUrl = giveawayMessage.url;
+
+                const linkRow = new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setLabel("Jump to Giveaway")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(jumpUrl)
+                );
 
                 if (entrants.length === 0) {
                     const endedEmbed = EmbedBuilder.from(originalEmbed)
@@ -48,6 +56,11 @@ module.exports = (client) => {
                         content: "<a:gwyy:1534265842248847422> **Giveaway Ended** <a:gwyy:1534265842248847422>",
                         embeds: [endedEmbed]
                     });
+
+                    await channel.send({
+                        content: `<a:BlackDot:1514727923175657654> No valid entries found for **${giveaway.prize}** — no winner could be selected.`,
+                        components: [linkRow]
+                    });
                     continue;
                 }
 
@@ -59,13 +72,17 @@ module.exports = (client) => {
                 const endedEmbed = EmbedBuilder.from(originalEmbed)
                     .setDescription(
 `<a:BlackDot:1514727923175657654> **Hosted by:** <@${giveaway.hostId}>
-<a:BlackDot:1514727923175657654> **Winner(s):** ${winners.map(w => `${w}`).join(", ")}
-<a:BlackDot:1514727923175657654> Congratulations ${winners.map(w => `${w}`).join(", ")}! You won **${giveaway.prize}**!`
+<a:BlackDot:1514727923175657654> **Winner(s):** ${winners.map(w => `${w}`).join(", ")}`
                     );
 
                 await giveawayMessage.edit({
                     content: "<a:gwyy:1534265842248847422> **Giveaway Ended** <a:gwyy:1534265842248847422>",
                     embeds: [endedEmbed]
+                });
+
+                await channel.send({
+                    content: `Congratulations ${winners.map(w => `${w}`).join(", ")}, You won **${giveaway.prize}**! Hosted by <@${giveaway.hostId}>`,
+                    components: [linkRow]
                 });
 
             } catch (err) {
