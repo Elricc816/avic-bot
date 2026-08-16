@@ -66,7 +66,7 @@ module.exports = {
             });
         }
 
-        const reaction = giveawayMessage.reactions.cache.get("booper:1535203898485112862");
+        const reaction = giveawayMessage.reactions.cache.get("1535203898485112862");
         const users = reaction ? await reaction.users.fetch() : new Map();
         const entrants = [...users.values()].filter(u => !u.bot);
 
