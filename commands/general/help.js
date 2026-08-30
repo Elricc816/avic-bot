@@ -37,95 +37,65 @@ module.exports = {
       cooldown.delete(message.author.id);
     }, 5000);
 
+    const heartbeat = Date.now() - message.createdTimestamp;
+    const api = Math.round(client.ws.ping);
+
     const embed = new EmbedBuilder()
-      .setColor('#D3D3D3')
-      .setImage('https://your-image-host.com/fare-banner.png') // TODO: replace with your hosted Fare banner URL
-      .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-      .setTitle('Fare help')
+      .setColor('#808080')
       .setDescription(
-        'A powerful, multi-purpose Discord bot built for **server security**, **moderation**, **high-fidelity utility tools** and much more.'
-      )
-      .addFields(
-        {
-          name: '<:shield:1514699900225323108> Security',
-          value: '`antinuke` `mainrole` `panicmode`',
-        },
-        {
-          name: '<:admin:1514699907103985664> Automod',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:mod1:1514699913919991839> Moderation',
-          value: '`ban` `unban` `kick` `mute` `unmute` `purge` `pb`',
-        },
-        {
-          name: '<:member1:1514699741282304061> General',
-          value: '`ping` `help` `botinfo` `userinfo`',
-        },
-        {
-          name: '<:brush:1514699282152685759> Embed System',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:server:1514699921914331136> Utility',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:dnd:1514699559094190220> Autoresponders',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:timerr:1514699712681218094> Timer',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:gwy2:1514699519244243107> Giveaway',
-          value: '`gcreate` `gend` `greroll` `glist` `gdelete`',
-        },
-        {
-          name: '<:general:1514699942181081261> Music',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:bug:1514699948480790608> Fun Commands',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:pin:1514699935264673902> Sticky',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:ticket:1514699959847616573> Tickets',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:CodeXFolder:1514708745756872845> Logging',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:bot1:1514699532686852227> Bot Settings',
-          value: '`botbanner` `boticon`',
-        },
-        {
-          name: '<:vip:1514699727072133233> AI',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:cart:1514699759250575472> Premium',
-          value: 'Coming soon',
-        }
-      )
-      .addFields({
-        name: '\u200b',
-        value:
-          `<:info:1514699288674828310> Select a category from the dropdown menu below to view available commands.\n\n` +
-          `**<:link:1514699706788221120> Links**\n` +
-          `[Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/ZnTDxjc5Zb) <:devv:1514699301144756234>`,
-      })
+`### Hey, This is **Avic**
+
+<:white_arrow:1514714190231769219> A powerful, multi-purpose Discord bot built for **server security**, **moderation**, **high-fidelity utility tools** and much more.
+
+<a:BlackDot:1514727923175657654> **Current Prefix:** \`,\`
+<a:BlackDot:1514727923175657654> **Use \`,help <category>\` to view commands.**
+
+**<:rocket:1514699262527541490> Quick Stats -
+          <:arrow:1514699753462566953> Heartbeat: ${heartbeat} ms
+          <:arrow:1514699753462566953> API: ${api} ms
+          <:arrow:1514699753462566953> Commands: ${client.commands.size}**
+
+> **<:shield:1514699900225323108>  \`»\` Security**
+> **<:admin:1514699907103985664>  \`»\` Automod**
+> **<:mod1:1514699913919991839>  \`»\` Moderation**
+> **<:member1:1514699741282304061>  \`»\` General**
+> **<:brush:1514699282152685759>  \`»\` Embed System**
+> **<:server:1514699921914331136>  \`»\` Utility**
+> **<:dnd:1514699559094190220>  \`»\` Autoresponders**
+> **<:timerr:1514699712681218094>  \`»\` Timer**
+> **<:gwy2:1514699519244243107>  \`»\` Giveaway**
+> **<:general:1514699942181081261>  \`»\` Music**
+> **<:bug:1514699948480790608>  \`»\` Fun Commands**
+> **<:pin:1514699935264673902>  \`»\` Sticky**
+> **<a:loading_Google:1514727933183524964>  \`»\` Voice Commands**
+> **<:ticket:1514699959847616573>  \`»\` Tickets**
+> **<:CodeXFolder:1514708745756872845>  \`»\` Logging**
+> **<:hat:1514699954264998041> \`»\` Voice Master**
+> **<:bot1:1514699532686852227>  \`»\` Bot Settings**
+> **<:visual:1514699307754721491>  \`»\` Invite Tracker**
+> **<:vip:1514699727072133233>  \`»\` AI**
+> **<:cart:1514699759250575472>  \`»\` Premium**
+
+<:white_arrow:1514714190231769219> Select a category from the dropdown menu below to view available commands.
+
+**<:info:1514699288674828310>  __Pro Tip__**
+Upgrade to Avic Premium for exclusive features ! <:diamond:1514699495768592635>
+
+**<:link:1514699706788221120>  __Links__**
+[Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/ZnTDxjc5Zb) <:devv:1514699301144756234>
+
+-# Developed by <@1306606920836055043> <:dev:1514699929199706143>
+-# <:heartt:1514699719400755432> Thanks For Using Avic!`
+)
+
+      .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+      .setImage('https://cdn.discordapp.com/attachments/1533479815049379900/1534941246252912781/Screenshot_20260731-220249_CapCut.jpg?ex=6a75f4ee&is=6a74a36e&hm=066a3195ae29d98c38dc666ac3b2349465fb08e368bb54dd8d1b5712dc3b0bf2&')
+
       .setFooter({
-        text: `Use ,help <command> for details on a specific command`,
+        text: `Executed by ${message.author.username}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
       })
+
       .setTimestamp();
 
     const row = new ActionRowBuilder()
