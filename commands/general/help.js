@@ -56,8 +56,8 @@ module.exports = {
         '-# Experience the ultimate Discord bot designed for seamless management and community engagement.'
       )
       .addFields({
-        name: '<:info:1514699288674828310> Info',
-        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:CodeXFolder:1514708745756872845> **Commands:** \`${client.commands.size}\`\n<:server:1514699921914331136> **Modules:** \`19\``,
+        name: '# <:info:1514699288674828310> Info',
+        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:CodeXFolder:1514708745756872845> **Commands:** \`${client.commands.size}\`\n<:server:1514699921914331136> **Modules:** \`5\`\n<:bluetick:1523423666585604106> **Owner:** <@${OWNER_ID}>`,
       })
       .setFooter({
         text: `Use ,help <command> for details on a specific command`,
