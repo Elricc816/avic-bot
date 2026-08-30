@@ -63,7 +63,7 @@ module.exports = {
       )
       .addFields({
         name: ' ‎',
-        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`19\`\n<:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>\n\n-# **Thanks for using Fare!**`,
+        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`19\`\n<:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>\n\n-# **[Invite Me**](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands)\n\n-# **Thanks for using Fare!**`,
       })
       .setFooter({
         text: `Command Executed by ${message.author.username}`,
@@ -108,7 +108,7 @@ module.exports = {
         new ButtonBuilder()
           .setLabel('Website')
           .setStyle(ButtonStyle.Link)
-          .setURL()
+          .setURL(https://farebot.vercel.app/)
       );
 
     const loadingMsg = await message.reply({
