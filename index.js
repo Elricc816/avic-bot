@@ -31,7 +31,7 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildVoiceStates
-  ]
+  ],
   allowedMentions: { repliedUser: false }
 });
 
