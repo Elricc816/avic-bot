@@ -16,8 +16,8 @@ const ICON_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/154
 const OWNER_ID = '1530872106399567941';
 
 // TODO: replace with your real support server invite and website URL
-const SUPPORT_URL = 'https://discord.gg/ZnTDxjc5Zb';
-const WEBSITE_URL = 'https://your-fare-website.com';
+const SUPPORT_URL = 'https://discord.gg/46Vn9pdtPF';
+const WEBSITE_URL = 'https://farebot.vercel.app/';
 
 module.exports = {
   name: "help",
@@ -104,11 +104,11 @@ module.exports = {
         new ButtonBuilder()
           .setLabel('Support')
           .setStyle(ButtonStyle.Link)
-          .setURL(https://discord.gg/46Vn9pdtPF),
+          .setURL(SUPPORT_URL),
         new ButtonBuilder()
           .setLabel('Website')
           .setStyle(ButtonStyle.Link)
-          .setURL(https://farebot.vercel.app/)
+          .setURL(WEBSITE_URL)
       );
 
     const loadingMsg = await message.reply({
