@@ -69,6 +69,12 @@ for (const folder of commandFolders) {
 
     if (command.name) {
       client.commands.set(command.name, command);
+
+      if (Array.isArray(command.aliases)) {
+        for (const alias of command.aliases) {
+          client.commands.set(alias, command);
+        }
+      }
     }
   }
 }
