@@ -57,8 +57,14 @@ module.exports = {
       )
       .addFields({
         name: ' ‎',
-        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`5\`\n<:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>\n\n-# Command Executed by ${message.author.username}\n-# Thanks for using Fare!`,
-      });
+        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`19\`\n<:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>\n\n-# Thanks for using Fare!`,
+      })
+
+    .setFooter({
+    text: `Command Executed by ${message.author.username}`,
+    iconURL: message.author.displayAvatarURL({ dynamic: true })
+  })
+  .setTimestamp();
 
     const row = new ActionRowBuilder()
       .addComponents(
