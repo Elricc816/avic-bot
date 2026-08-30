@@ -58,18 +58,13 @@ module.exports = {
       .addFields({
         name: ' ‎',
         value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`5\`\n<:crown:1514699539657920592> **Bot  Owner:** <@${OWNER_ID}>`,
-      })
-      .setFooter({
-        text: `Use ,help <command> for details on a specific command`,
-        iconURL: message.author.displayAvatarURL({ dynamic: true })
-      })
-      .setTimestamp();
+      });
 
     const row = new ActionRowBuilder()
       .addComponents(
         new StringSelectMenuBuilder()
           .setCustomId('help_menu')
-          .setPlaceholder('Select a category')
+          .setPlaceholder('⤷Select a module to see')
           .addOptions(
             { label: 'General', description: 'View general commands', value: 'general', emoji: { id: '1514699741282304061' } },
             { label: 'Security', description: 'View security commands', value: 'security', emoji: { id: '1514699900225323108' } },
