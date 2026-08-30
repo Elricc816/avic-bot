@@ -79,7 +79,7 @@ module.exports = {
             { label: 'Utility', description: 'View utility commands', value: 'utility', emoji: { id: '1514699921914331136' } },
             { label: 'Autoresponders', description: 'View autoresponder commands', value: 'autoresponders', emoji: { id: '1514699559094190220' } },
             { label: 'Timer', description: 'View timer commands', value: 'timer', emoji: { id: '1514699712681218094' } },
-            { label: 'Giveaway', description: 'View giveaway commands', value: 'giveaway', emoji: { id: '1514699519244243107' } },
+            { label: 'Giveaway', description: 'View giveaway commands', value: 'giveaway', emoji: { id: '1514705355412865136' } },
             { label: 'Music', description: 'View music commands', value: 'music', emoji: { id: '1514699942181081261' } },
             { label: 'Fun Commands', description: 'View fun commands', value: 'funcommands', emoji: { id: '1514699948480790608' } },
             { label: 'Sticky', description: 'View sticky commands', value: 'sticky', emoji: { id: '1514699935264673902' } },
