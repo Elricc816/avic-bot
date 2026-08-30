@@ -73,7 +73,7 @@ for (const folder of commandFolders) {
 }
 
 client.once('ready', () => {
-    console.log(`🤖 Avic Bot logged in as ${client.user.tag}`);
+    console.log(`🤖 Fare Bot logged in as ${client.user.tag}`);
 
   require("./events/giveawayManager")(client);
 
