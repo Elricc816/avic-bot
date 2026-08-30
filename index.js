@@ -303,7 +303,7 @@ Hey ${message.author}! Here are my current prefixes:
 
 setTimeout(() => {
   pingMsg.delete().catch(() => {});
-}, 5000);
+}, 10000);
 
 return;
   }
