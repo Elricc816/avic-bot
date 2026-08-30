@@ -44,9 +44,12 @@ module.exports = {
       cooldown.delete(message.author.id);
     }, 5000);
 
-    const embed = new EmbedBuilder()
+    const bannerEmbed = new EmbedBuilder()
       .setColor('#D3D3D3')
-      .setImage(BANNER_URL)
+      .setImage(BANNER_URL);
+
+    const infoEmbed = new EmbedBuilder()
+      .setColor('#D3D3D3')
       .setThumbnail(ICON_URL)
       .setTitle('Fare help')
       .setDescription(
@@ -76,7 +79,7 @@ module.exports = {
             { label: 'Utility', description: 'View utility commands', value: 'utility', emoji: { id: '1514699921914331136' } },
             { label: 'Autoresponders', description: 'View autoresponder commands', value: 'autoresponders', emoji: { id: '1514699559094190220' } },
             { label: 'Timer', description: 'View timer commands', value: 'timer', emoji: { id: '1514699712681218094' } },
-            { label: 'Giveaway', description: 'View giveaway commands', value: 'giveaway', emoji: { id: '1514705355412865136' } },
+            { label: 'Giveaway', description: 'View giveaway commands', value: 'giveaway', emoji: { id: '1514699519244243107' } },
             { label: 'Music', description: 'View music commands', value: 'music', emoji: { id: '1514699942181081261' } },
             { label: 'Fun Commands', description: 'View fun commands', value: 'funcommands', emoji: { id: '1514699948480790608' } },
             { label: 'Sticky', description: 'View sticky commands', value: 'sticky', emoji: { id: '1514699935264673902' } },
@@ -103,7 +106,7 @@ module.exports = {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     await loadingMsg.edit({
-      embeds: [embed],
+      embeds: [bannerEmbed, infoEmbed],
       components: [row]
     });
 
@@ -134,7 +137,7 @@ module.exports = {
 **__Panicmode__**
 \`panicmode\` , \`panicmode disable\` , \`panicmode enable\` , \`panicmode setup\` , \`panicmode reset\` , \`panicmode show\`
 
--# Powered By Elric`
+-# Powered By Fare`
         ),
 
       moderation: new EmbedBuilder()
