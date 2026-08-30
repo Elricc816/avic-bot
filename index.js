@@ -32,6 +32,7 @@ const client = new Client({
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildVoiceStates
   ]
+  allowedMentions: { repliedUser: false }
 });
 
 client.commands = new Collection();
