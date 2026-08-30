@@ -6,11 +6,12 @@ const {
 
 const cooldown = new Set();
 
-// TODO: replace these two with real Discord CDN links —
-// send each image in a channel, right-click (or long-press) it,
-// tap "Copy Link", and paste the URL here.
-const BANNER_URL = 'https://cdn.discordapp.com/attachments/1432767818075738242/1543490165790736565/banner.jpg?ex=6a950ebc&is=6a93bd3c&hm=8edf0d2eca004f4a4c25c46e899946134302e6d06b9ed55411ef82c9fbb03864&';
-const ICON_URL = 'https://cdn.discordapp.com/attachments/1432767818075738242/1543490396494233680/icon.jpg?ex=6a950ef3&is=6a93bd73&hm=b22a32ec6cfd186e86ff52e286889a080b0e21a893053a13fa866e696906c69d&';
+// TODO: replace with permanent imgur (or GitHub raw) links —
+// the current Discord CDN links expire.
+const BANNER_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1543492999626104852/banner.jpg?ex=6a95115f&is=6a93bfdf&hm=6a1c42a3b2edb9bcbd6ec1cf79ef42f58f75756dc159206c65465a18a662f668&';
+const ICON_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1543492889475153961/icon.jpg?ex=6a951145&is=6a93bfc5&hm=9c118bc6b4dc4b177ad0665531a2bd975511f8b53015c5b08cd443ea941195dd&';
+
+const OWNER_ID = '1530872106399567941';
 
 module.exports = {
   name: "help",
@@ -49,84 +50,11 @@ module.exports = {
       .setThumbnail(ICON_URL)
       .setTitle('Fare help')
       .setDescription(
-        'A powerful, multi-purpose Discord bot built for **server security**, **moderation**, **high-fidelity utility tools** and much more.'
-      )
-      .addFields(
-        {
-          name: '<:shield:1514699900225323108> Security',
-          value: '`antinuke` `mainrole` `panicmode`',
-        },
-        {
-          name: '<:admin:1514699907103985664> Automod',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:mod1:1514699913919991839> Moderation',
-          value: '`ban` `unban` `kick` `mute` `unmute` `purge` `pb`',
-        },
-        {
-          name: '<:member1:1514699741282304061> General',
-          value: '`ping` `help` `botinfo` `userinfo`',
-        },
-        {
-          name: '<:brush:1514699282152685759> Embed System',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:server:1514699921914331136> Utility',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:dnd:1514699559094190220> Autoresponders',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:timerr:1514699712681218094> Timer',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:gwy2:1514699519244243107> Giveaway',
-          value: '`gcreate` `gend` `greroll` `glist` `gdelete`',
-        },
-        {
-          name: '<:general:1514699942181081261> Music',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:bug:1514699948480790608> Fun Commands',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:pin:1514699935264673902> Sticky',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:ticket:1514699959847616573> Tickets',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:CodeXFolder:1514708745756872845> Logging',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:bot1:1514699532686852227> Bot Settings',
-          value: '`botbanner` `boticon`',
-        },
-        {
-          name: '<:vip:1514699727072133233> AI',
-          value: 'Coming soon',
-        },
-        {
-          name: '<:cart:1514699759250575472> Premium',
-          value: 'Coming soon',
-        }
+        'Experience the ultimate Discord bot designed for seamless management and community engagement.'
       )
       .addFields({
-        name: '\u200b',
-        value:
-          `<:info:1514699288674828310> Select a category from the dropdown menu below to view available commands.\n\n` +
-          `**<:link:1514699706788221120> Links**\n` +
-          `[Invite me](https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands) <:dot:1514706694079254730> [Support](https://discord.gg/ZnTDxjc5Zb) <:devv:1514699301144756234>`,
+        name: '<:member1:1514699741282304061> General',
+        value: `Bot created by <@${OWNER_ID}>`,
       })
       .setFooter({
         text: `Use ,help <command> for details on a specific command`,
@@ -140,24 +68,25 @@ module.exports = {
           .setCustomId('help_menu')
           .setPlaceholder('Select a category')
           .addOptions(
-            {
-              label: 'Security',
-              description: 'View security commands',
-              value: 'security',
-              emoji: { id: '1514699900225323108' }
-            },
-            {
-              label: 'Automod',
-              description: 'View automod commands',
-              value: 'automod',
-              emoji: { id: '1514699907103985664' }
-            },
-            {
-              label: 'Moderation',
-              description: 'View moderation commands',
-              value: 'moderation',
-              emoji: { id: '1514699913919991839' }
-            }
+            { label: 'General', description: 'View general commands', value: 'general', emoji: { id: '1514699741282304061' } },
+            { label: 'Security', description: 'View security commands', value: 'security', emoji: { id: '1514699900225323108' } },
+            { label: 'Automod', description: 'View automod commands', value: 'automod', emoji: { id: '1514699907103985664' } },
+            { label: 'Moderation', description: 'View moderation commands', value: 'moderation', emoji: { id: '1514699913919991839' } },
+            { label: 'Embed System', description: 'View embed commands', value: 'embedsystem', emoji: { id: '1514699282152685759' } },
+            { label: 'Utility', description: 'View utility commands', value: 'utility', emoji: { id: '1514699921914331136' } },
+            { label: 'Autoresponders', description: 'View autoresponder commands', value: 'autoresponders', emoji: { id: '1514699559094190220' } },
+            { label: 'Timer', description: 'View timer commands', value: 'timer', emoji: { id: '1514699712681218094' } },
+            { label: 'Giveaway', description: 'View giveaway commands', value: 'giveaway', emoji: { id: '1514699519244243107' } },
+            { label: 'Music', description: 'View music commands', value: 'music', emoji: { id: '1514699942181081261' } },
+            { label: 'Fun Commands', description: 'View fun commands', value: 'funcommands', emoji: { id: '1514699948480790608' } },
+            { label: 'Sticky', description: 'View sticky commands', value: 'sticky', emoji: { id: '1514699935264673902' } },
+            { label: 'Tickets', description: 'View ticket commands', value: 'tickets', emoji: { id: '1514699959847616573' } },
+            { label: 'Logging', description: 'View logging commands', value: 'logging', emoji: { id: '1514708745756872845' } },
+            { label: 'Voice Master', description: 'View voice master commands', value: 'voicemaster', emoji: { id: '1514699954264998041' } },
+            { label: 'Bot Settings', description: 'View bot settings commands', value: 'botsettings', emoji: { id: '1514699532686852227' } },
+            { label: 'Invite Tracker', description: 'View invite tracker commands', value: 'invitetracker', emoji: { id: '1514699307754721491' } },
+            { label: 'AI', description: 'View AI commands', value: 'ai', emoji: { id: '1514699727072133233' } },
+            { label: 'Premium', description: 'View premium commands', value: 'premium', emoji: { id: '1514699759250575472' } }
           )
       );
 
@@ -183,6 +112,52 @@ module.exports = {
       time: 300000
     });
 
+    const categoryEmbeds = {
+      general: new EmbedBuilder()
+        .setColor('#D3D3D3')
+        .setTitle('<:member1:1514699741282304061> General Commands')
+        .setDescription('` ,ping `\n` ,help `\n` ,botinfo `\n` ,userinfo `'),
+
+      security: new EmbedBuilder()
+        .setColor('#D3D3D3')
+        .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+        .setTitle('<:shield:1514699900225323108> Security Modules')
+        .setDescription(
+`### Security Modules
+
+**__Antinuke__**
+\`antinuke\` , \`antinuke whitelist\` , \`antinuke zplus\` , \`antinuke betrayalguard\` , \`antinuke logdisable\` , \`antinuke limit\` , \`antinuke disable\` , \`antinuke trustlimit\` , \`antinuke reset\` , \`antinuke wallon\` , \`antinuke autorecovery\` , \`antinuke enable\` , \`antinuke walloff\` , \`antinuke manage\` , \`antinuke wizard\` , \`antinuke logging\`
+
+**__Mainrole__**
+\`mainrole\` , \`mainrole reset\` , \`mainrole add\` , \`mainrole remove\` , \`mainrole show\`
+
+**__Panicmode__**
+\`panicmode\` , \`panicmode disable\` , \`panicmode enable\` , \`panicmode setup\` , \`panicmode reset\` , \`panicmode show\`
+
+-# Powered By Elric`
+        ),
+
+      moderation: new EmbedBuilder()
+        .setColor('#D3D3D3')
+        .setTitle('<:mod1:1514699913919991839> Moderation Commands')
+        .setDescription(
+          '` ,ban `\n` ,softban `\n` ,kick `\n` ,mute `\n` ,unmute `\n` ,unban `\n' +
+          '` ,nick `\n` ,clone `\n` ,nuke `\n` ,hideall `\n` ,unhideall `\n' +
+          '` ,lockall `\n` ,unlockall `\n` ,unbanall `\n` ,lock `\n` ,unlock `\n' +
+          '` ,hide `\n` ,unhide `\n` ,slowmode `\n` ,unslowmode `\n` ,channel `'
+        ),
+
+      giveaway: new EmbedBuilder()
+        .setColor('#D3D3D3')
+        .setTitle('<:gwy2:1514699519244243107> Giveaway Commands')
+        .setDescription('` ,gcreate `\n` ,gend `\n` ,greroll `\n` ,glist `\n` ,gdelete `'),
+
+      botsettings: new EmbedBuilder()
+        .setColor('#D3D3D3')
+        .setTitle('<:bot1:1514699532686852227> Bot Settings Commands')
+        .setDescription('` ,botbanner `\n` ,boticon `'),
+    };
+
     collector.on('collect', async interaction => {
 
       if (interaction.user.id !== message.author.id) {
@@ -198,26 +173,11 @@ module.exports = {
         });
       }
 
-      if (interaction.isStringSelectMenu() && interaction.values[0] === 'security') {
+      const selected = interaction.values[0];
+      const categoryEmbed = categoryEmbeds[selected];
 
-        const securityEmbed = new EmbedBuilder()
-          .setColor('#D3D3D3')
-          .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-          .setTitle('<:shield:1514699900225323108> Security Modules')
-          .setDescription(
-`### Security Modules
-
-**__Antinuke__**
-\`antinuke\` , \`antinuke whitelist\` , \`antinuke zplus\` , \`antinuke betrayalguard\` , \`antinuke logdisable\` , \`antinuke limit\` , \`antinuke disable\` , \`antinuke trustlimit\` , \`antinuke reset\` , \`antinuke wallon\` , \`antinuke autorecovery\` , \`antinuke enable\` , \`antinuke walloff\` , \`antinuke manage\` , \`antinuke wizard\` , \`antinuke logging\`
-
-**__Mainrole__**
-\`mainrole\` , \`mainrole reset\` , \`mainrole add\` , \`mainrole remove\` , \`mainrole show\`
-
-**__Panicmode__**
-\`panicmode\` , \`panicmode disable\` , \`panicmode enable\` , \`panicmode setup\` , \`panicmode reset\` , \`panicmode show\`
-
--# Powered By Elric`
-          )
+      if (categoryEmbed) {
+        const replyEmbed = EmbedBuilder.from(categoryEmbed)
           .setFooter({
             text: `Executed by ${message.author.username}`,
             iconURL: message.author.displayAvatarURL({ dynamic: true })
@@ -225,28 +185,7 @@ module.exports = {
           .setTimestamp();
 
         return interaction.reply({
-          embeds: [securityEmbed],
-          ephemeral: true
-        });
-      }
-
-      if (interaction.isStringSelectMenu() && interaction.values[0] === 'moderation') {
-
-        const modEmbed = new EmbedBuilder()
-          .setColor('#D3D3D3')
-          .setTitle('<:mod1:1514699913919991839> Moderation Commands')
-          .setDescription(
-            '` ,ban `\n' +
-            '` ,unban `\n' +
-            '` ,kick `\n' +
-            '` ,mute `\n' +
-            '` ,unmute `\n' +
-            '` ,purge `\n' +
-            '` ,pb `'
-          );
-
-        return interaction.reply({
-          embeds: [modEmbed],
+          embeds: [replyEmbed],
           ephemeral: true
         });
       }
