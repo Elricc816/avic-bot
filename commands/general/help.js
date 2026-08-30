@@ -1,7 +1,9 @@
 const {
   EmbedBuilder,
   ActionRowBuilder,
-  StringSelectMenuBuilder
+  StringSelectMenuBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } = require('discord.js');
 
 const cooldown = new Set();
@@ -12,6 +14,10 @@ const BANNER_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1
 const ICON_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1543492889475153961/icon.jpg?ex=6a951145&is=6a93bfc5&hm=9c118bc6b4dc4b177ad0665531a2bd975511f8b53015c5b08cd443ea941195dd&';
 
 const OWNER_ID = '1530872106399567941';
+
+// TODO: replace with your real support server invite and website URL
+const SUPPORT_URL = 'https://discord.gg/ZnTDxjc5Zb';
+const WEBSITE_URL = 'https://your-fare-website.com';
 
 module.exports = {
   name: "help",
@@ -57,16 +63,15 @@ module.exports = {
       )
       .addFields({
         name: ' ‎',
-        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`19\`\n<:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>\n\n-# Thanks for using Fare!`,
+        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`19\`\n<:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>\n\n-# **Thanks for using Fare!**`,
       })
+      .setFooter({
+        text: `Command Executed by ${message.author.username}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true })
+      })
+      .setTimestamp();
 
-    .setFooter({
-    text: `Command Executed by ${message.author.username}`,
-    iconURL: message.author.displayAvatarURL({ dynamic: true })
-  })
-  .setTimestamp();
-
-    const row = new ActionRowBuilder()
+    const selectRow = new ActionRowBuilder()
       .addComponents(
         new StringSelectMenuBuilder()
           .setCustomId('help_menu')
@@ -94,6 +99,18 @@ module.exports = {
           )
       );
 
+    const linkRow = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+          .setLabel('Support')
+          .setStyle(ButtonStyle.Link)
+          .setURL(https://discord.gg/46Vn9pdtPF),
+        new ButtonBuilder()
+          .setLabel('Website')
+          .setStyle(ButtonStyle.Link)
+          .setURL()
+      );
+
     const loadingMsg = await message.reply({
       embeds: [
         new EmbedBuilder()
@@ -108,7 +125,7 @@ module.exports = {
 
     await loadingMsg.edit({
       embeds: [bannerEmbed, infoEmbed],
-      components: [row]
+      components: [selectRow, linkRow]
     });
 
     const collector = loadingMsg.createMessageComponentCollector({
