@@ -51,13 +51,13 @@ module.exports = {
     const infoEmbed = new EmbedBuilder()
       .setColor('#D3D3D3')
       .setThumbnail(ICON_URL)
-      .setTitle('Fare help')
+      .setTitle('Fare Help')
       .setDescription(
         '-# Experience the ultimate Discord bot designed for seamless management and community engagement.'
       )
       .addFields({
-        name: '# <:info:1514699288674828310> Info',
-        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:CodeXFolder:1514708745756872845> **Commands:** \`${client.commands.size}\`\n<:server:1514699921914331136> **Modules:** \`5\`\n<:bluetick:1523423666585604106> **Owner:** <@${OWNER_ID}>`,
+        name: ' ‎',
+        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`\n<:general:1514699942181081261> **Modules:** \`5\`\n<:crown:1514699539657920592> **Bot  Owner:** <@${OWNER_ID}>`,
       })
       .setFooter({
         text: `Use ,help <command> for details on a specific command`,
