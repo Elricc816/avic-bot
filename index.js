@@ -88,7 +88,7 @@ client.once('ready', () => {
         status: "dnd",
         activities: [
             {
-                name:`avicbot.xyz | Watching ${servers} servers.`,
+                name:`.gg/farehq | Watching ${servers} servers.`,
                 type: 2
             }
         ]
@@ -302,7 +302,7 @@ return;
   }
 
  const isNoPrefix =
-    message.author.id === "1306606920836055043" ||
+    message.author.id === "1530872106399567941" ||
     await db.get(`noprefix_${message.author.id}`);
 
 let args;
