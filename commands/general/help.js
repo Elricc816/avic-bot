@@ -53,11 +53,11 @@ module.exports = {
       .setThumbnail(ICON_URL)
       .setTitle('Fare help')
       .setDescription(
-        'Experience the ultimate Discord bot designed for seamless management and community engagement.'
+        '-# Experience the ultimate Discord bot designed for seamless management and community engagement.'
       )
       .addFields({
-        name: '<:member1:1514699741282304061> General',
-        value: `Bot created by <@${OWNER_ID}>`,
+        name: '<:info:1514699288674828310> Info',
+        value: `<:slash:1514699274917511248> **Prefix:** \`,\`\n<:CodeXFolder:1514708745756872845> **Commands:** \`${client.commands.size}\`\n<:server:1514699921914331136> **Modules:** \`19\``,
       })
       .setFooter({
         text: `Use ,help <command> for details on a specific command`,
