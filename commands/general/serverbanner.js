@@ -7,7 +7,7 @@ const {
 
 module.exports = {
     name: "serverbanner",
-    aliases: ["banner", "guildbanner"],
+    aliases: ["guildbanner"],
 
     async execute(message) {
 
