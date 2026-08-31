@@ -231,6 +231,13 @@ Fare:
             }
 
             await loading.edit(chunks[0]);
+            const aiEmoji = message.client.emojis.cache.get(
+    "1514699727072133233"
+);
+
+if (aiEmoji) {
+    await loading.react(aiEmoji).catch(() => {});
+}
 
             for (let i = 1; i < chunks.length; i++) {
                 await message.channel.send(
