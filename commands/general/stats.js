@@ -88,7 +88,7 @@ A total of **${commands}** commands are loaded and operational.`
             new ButtonBuilder()
                 .setLabel("Support")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://discord.gg/HRE4N4zJHK")
+                .setURL("https://discord.gg/HRE4N4zJHK"),
 
             new ButtonBuilder()
                 .setLabel("Invite")
