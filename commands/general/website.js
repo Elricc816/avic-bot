@@ -7,22 +7,23 @@ const {
 
 module.exports = {
     name: "website",
+    aliases: ["web"],
 
     async execute(message) {
 
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setAuthor({
-                name: "AVIC Website",
+                name: "Fare Website",
                 iconURL: message.client.user.displayAvatarURL()
             })
             .setThumbnail(message.client.user.displayAvatarURL({ size: 1024 }))
             .setDescription(
-`<:website:1514699532686852227> **Official Website**
+`<:link:1514699706788221120> **Official Website**
 
-Visit AVIC's official website for information, updates, documentation and more.
+Visit Fare's official website for information, updates, documentation and more.
 
-> <:arrow:1514699753462566953> **Website:** https://avicbot.vercel.app
+> <:arrow:1514699753462566953> **Website:** https://farebot.vercel.app
 > <:arrow:1514699753462566953> **Documentation:** Coming Soon
 > <:arrow:1514699753462566953> **Status Page:** Coming Soon`
             )
@@ -35,17 +36,17 @@ Visit AVIC's official website for information, updates, documentation and more.
             new ButtonBuilder()
                 .setLabel("Website")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app"),
+                .setURL("https://farebot.vercel.app"),
 
             new ButtonBuilder()
                 .setLabel("Documentation")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app/docs"),
+                .setURL("https://farebot.vercel.app/docs"),
 
             new ButtonBuilder()
                 .setLabel("Status")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app"),
+                .setURL("https://farebot.vercel.app"),
 
             new ButtonBuilder()
                 .setLabel("Support")
