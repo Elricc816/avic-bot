@@ -96,7 +96,7 @@ client.once('ready', () => {
         activities: [
             {
                 name:`.gg/farehq | Watching ${servers} servers.`,
-                type: 2
+                type: 3
             }
         ]
     });
