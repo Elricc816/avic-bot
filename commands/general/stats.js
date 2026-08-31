@@ -52,7 +52,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor("#D3D3D3")
             .setAuthor({
-                name: "AVIC's Statistics",
+                name: "Fare's Statistics",
                 iconURL: client.user.displayAvatarURL({
                     dynamic: true
                 })
@@ -64,9 +64,9 @@ module.exports = {
                 })
             )
         .setDescription(
-`### <:signal:1533480238393065575> AVIC's Statistics
+`### <:signal:1533480238393065575> Fare's Statistics
 
-Comprehensive real-time overview of **AVIC**'s operational status, resource usage, and shard distribution across the network. 
+Comprehensive real-time overview of **Fare**'s operational status, resource usage, and shard distribution across the network. 
 
 The bot is currently serving **${users.toLocaleString()}** users across **${servers.toLocaleString()}** servers, managing a total of **${channels.toLocaleString()}** channels. It has been running continuously for **${uptimeString}** with a websocket latency of **${ping}ms**. Running on **1** shard, this server is routed through **Shard ${shard}**. The bot is consuming **${ram} MB** of memory, powered by **Node.js ${node}** and **discord.js v${djs}**.
 A total of **${commands}** commands are loaded and operational.`
@@ -79,20 +79,11 @@ A total of **${commands}** commands are loaded and operational.`
             });
 
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setLabel("Status")
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app"),
-
+            
             new ButtonBuilder()
                 .setLabel("Website")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app"),
-
-            new ButtonBuilder()
-                .setLabel("Documentation")
-                .setStyle(ButtonStyle.Link)
-                .setURL("https://avicbot.vercel.app"),
+                .setURL("https://farebot.vercel.app"),
 
             new ButtonBuilder()
                 .setLabel("Support")
