@@ -95,8 +95,8 @@ client.once('ready', () => {
         status: "dnd",
         activities: [
             {
-                name:`.gg/farehq | Watching ${servers} servers.`,
-                type: 6
+                name:`You click delete, I click ban.`,
+                type: 4
             }
         ]
     });
