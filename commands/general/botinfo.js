@@ -38,7 +38,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor("#D3D3D3")
       .setAuthor({
-        name: "Avic#5361",
+        name: "Fare#5361",
         iconURL: client.user.displayAvatarURL()
       })
       .setThumbnail(client.user.displayAvatarURL({ size: 1024 }))
