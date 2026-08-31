@@ -42,7 +42,7 @@ module.exports = {
         iconURL: client.user.displayAvatarURL()
       })
       .setThumbnail(client.user.displayAvatarURL({ size: 1024 }))
-      .setDescription(`### It's AVIC <:devs:1514699513271685360>
+      .setDescription(`### It's Fare!
       
       A powerful, multi-purpose Discord bot built for **server security, moderation, utility** and much more.
 Trusted by **${guilds.toLocaleString()}** servers and **${users.toLocaleString()}** users worldwide.
@@ -57,7 +57,7 @@ Using **${memory} MB** of memory.
 
 Read the **documentation** for detailed guides & commands, visit our **website** for updates, or join the **support server** for help.
 
-Bot Developed by <@1306606920836055043>`
+Bot Developed by <@1530872106399567941>`
       )
       .setFooter({
         text: `Requested by ${message.author.username}`,
@@ -73,14 +73,14 @@ Bot Developed by <@1306606920836055043>`
       new ButtonBuilder()
         .setLabel("Website")
         .setStyle(ButtonStyle.Link)
-        .setURL("https://avicbot.vercel.app")
+        .setURL("https://farebot.vercel.app")
     );
 
     const row2 = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel("Docs")
         .setStyle(ButtonStyle.Link)
-        .setURL("https://avicbot.vercel.app/"),
+        .setURL("https://farebot.vercel.app/"),
 
       new ButtonBuilder()
         .setLabel("Support")
