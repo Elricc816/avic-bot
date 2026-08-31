@@ -89,6 +89,11 @@ A total of **${commands}** commands are loaded and operational.`
                 .setLabel("Support")
                 .setStyle(ButtonStyle.Link)
                 .setURL("https://discord.gg/HRE4N4zJHK")
+
+            new ButtonBuilder()
+                .setLabel("Invite")
+                .setStyle(ButtonStyle.Link)
+                .setURL("https://discord.com/oauth2/authorize?client_id=1514506916993306744&permissions=8&integration_type=0&scope=bot+applications.commands")
         );
 return message.reply({
             embeds: [embed],
