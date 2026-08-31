@@ -44,6 +44,17 @@ module.exports = {
 
         function bannerEmbed() {
 
+            const isAnimated = user.banner && user.banner.startsWith("a_");
+
+            let formatLinks =
+`> [PNG](${user.bannerURL({ extension: "png", size: 4096 })})
+> [JPG](${user.bannerURL({ extension: "jpg", size: 4096 })})
+> [WEBP](${user.bannerURL({ extension: "webp", size: 4096 })})`;
+
+            if (isAnimated) {
+                formatLinks += `\n> [GIF](${user.bannerURL({ extension: "gif", size: 4096 })})`;
+            }
+
             return new EmbedBuilder()
                 .setColor("#D3D3D3")
                 .setAuthor({
@@ -52,7 +63,11 @@ module.exports = {
                 })
                 .setImage(banner)
                 .setDescription(
-`<:member1:1514699741282304061> **User:** ${member}`
+`<:member1:1514699741282304061> **User:** ${member}
+
+<:search:1523258723974381580> **Banner Links**
+${formatLinks}
+> [Banner URL](${banner})`
                 )
                 .setFooter({
                     text: `Requested by ${message.author.username} • Today at ${new Date().toLocaleTimeString([], {
