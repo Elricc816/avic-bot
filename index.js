@@ -84,26 +84,40 @@ client.once('ready', () => {
 
   require("./events/giveawayManager")(client);
 
-    const updateStatus = () => {
+    let statusIndex = 0;
+
+const updateStatus = () => {
     const servers = client.guilds.cache.size;
     const users = client.guilds.cache.reduce(
         (total, guild) => total + guild.memberCount,
         0
     );
 
+    const statuses = [
+        "You click delete, I click ban.",
+        "🔗 farebot.vercel.app",
+        `Watching ${servers} servers.`,
+        `With ${users} users.`,
+        "Minimal. Powerful. Fare",
+        ",help | Counting the Stars",
+        "🔗 dsc.gg/farehq"
+    ];
+
     client.user.setPresence({
         status: "dnd",
         activities: [
             {
-                name:`You click delete, I click ban.`,
+                name: statuses[statusIndex],
                 type: 4
             }
         ]
     });
+
+    statusIndex = (statusIndex + 1) % statuses.length;
 };
 
 updateStatus();
-setInterval(updateStatus, 30000);
+setInterval(updateStatus, 15000);
 });
 
 client.on('messageCreate', async message => {
