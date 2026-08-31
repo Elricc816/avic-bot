@@ -96,7 +96,7 @@ client.once('ready', () => {
         activities: [
             {
                 name:`.gg/farehq | Watching ${servers} servers.`,
-                type: 2
+                type: 4
             }
         ]
     });
@@ -303,7 +303,7 @@ Hey ${message.author}! Here are my current prefixes:
 
 setTimeout(() => {
   pingMsg.delete().catch(() => {});
-}, 10000);
+}, 15000);
 
 return;
   }
