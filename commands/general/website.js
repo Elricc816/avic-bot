@@ -7,7 +7,7 @@ const {
 
 module.exports = {
     name: "website",
-    aliases: ["web"],
+    aliases: ["web","site"],
 
     async execute(message) {
 
