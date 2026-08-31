@@ -24,7 +24,7 @@ module.exports = {
         if (!query) {
             const embed = new EmbedBuilder()
                 .setColor("#D3D3D3")
-                .setTitle("<:bot3:1514699096047358082> AI Command Help")
+                .setTitle("<:info:1514699288674828310> AI Command Help")
                 .setDescription(
 `**\`\`\`yml
 <..> <required> | [..] [optional]
