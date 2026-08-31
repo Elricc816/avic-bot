@@ -1,7 +1,7 @@
 {
-  "name": "elio-bot",
+  "name": "fare-bot",
   "version": "1.0.0",
-  "description": "Elio Discord Bot",
+  "description": "Fare Discord Bot",
   "engines": {
     "node": "20.x"
   },
