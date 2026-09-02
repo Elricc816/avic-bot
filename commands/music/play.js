@@ -32,8 +32,10 @@ module.exports = {
 
       message.reply(`🎵 Added **${track.title}** to the queue.`);
     } catch (error) {
-      console.error(error);
-      message.reply("❌ I couldn't play that song.");
+  console.error("MUSIC ERROR:", error?.message);
+  console.error("MUSIC STACK:", error?.stack);
+
+  message.reply("❌ I couldn't play that song.");
     }
   }
 };
