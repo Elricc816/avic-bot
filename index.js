@@ -27,6 +27,7 @@ const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const path = require('path');
 
+const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
 setInterval(() => {
@@ -60,16 +61,6 @@ const player = new Player(client);
 client.player = player;
 
 player.extractors.register(YouTubeDlpExtractor, {});
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.GuildVoiceStates
-  ],
-  allowedMentions: { repliedUser: false }
-});
 
 client.commands = new Collection();
 const cooldowns = new Collection();
