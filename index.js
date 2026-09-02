@@ -8,12 +8,38 @@ process.on("uncaughtException", (err) => {
 
 console.log("Node Version:", process.version);
 
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const {
+  Client,
+  GatewayIntentBits,
+  Collection
+} = require('discord.js');
+
+const {
+  Player
+} = require('discord-player');
+
+const {
+  YouTubeDlpExtractor,
+  setFFmpegPath
+} = require('discord-player-youtubedlp');
+
+const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const path = require('path');
 
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
+// =========================
+// MUSIC PLAYER
+// =========================
+
+setFFmpegPath(ffmpegPath);
+
+const player = new Player(client);
+
+client.player = player;
+
+player.extractors.register(YouTubeDlpExtractor, {});
 
 setInterval(() => {
   const mem = process.memoryUsage();
