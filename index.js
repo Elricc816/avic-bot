@@ -27,8 +27,28 @@ const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const path = require('path');
 
-const { QuickDB } = require("quick.db");
 const db = new QuickDB();
+
+setInterval(() => {
+  const mem = process.memoryUsage();
+  console.log(
+    "RAM:",
+    Math.round(mem.rss / 1024 / 1024) + "MB"
+  );
+}, 60000);
+
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildVoiceStates
+  ],
+  allowedMentions: { repliedUser: false }
+});
+
 // =========================
 // MUSIC PLAYER
 // =========================
@@ -40,16 +60,6 @@ const player = new Player(client);
 client.player = player;
 
 player.extractors.register(YouTubeDlpExtractor, {});
-
-setInterval(() => {
-  const mem = process.memoryUsage();
-  console.log(
-    "RAM:",
-    Math.round(mem.rss / 1024 / 1024) + "MB"
-  );
-}, 60000);
-
-const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
