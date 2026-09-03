@@ -338,7 +338,7 @@ module.exports = {
 **__Mainrole__**
 \`mainrole\` , \`mainrole remove\` , \`mainrole add\` , \`mainrole show\` , \`mainrole reset\`
 
-**__Panicmode__ <:0_:1509325949659775103><:1_:1509325967288569917><:2_:1509325980592902306>**
+**__Panicmode__**
 \`panicmode\` , \`panicmode enable\` , \`panicmode reset\` , \`panicmode setup\` , \`panicmode deactivate\` , \`panicmode activate\` , \`panicmode disable\` , \`panicmode show\``),
 
 
@@ -451,7 +451,7 @@ module.exports = {
 
       giveaway: new EmbedBuilder()
         .setColor('#D3D3D3')
-        .setTitle('<:gwy2:1514699519244243107> Giveaway')
+        .setTitle('<:gwy3:1514705349859606548> **__iveaway__**')
         .setDescription(
 `**__Giveaways__**
 \`gcreate\` , \`gend\` , \`greroll\` , \`glist\` , \`gdelete\``),
