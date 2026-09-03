@@ -60,7 +60,12 @@ const player = new Player(client);
 
 client.player = player;
 
-player.extractors.register(YouTubeDlpExtractor, {});
+player.extractors.register(YouTubeDlpExtractor, {
+  agent: {
+    forceIPv4: true
+  },
+  debug: true
+});
 
 client.commands = new Collection();
 const cooldowns = new Collection();
