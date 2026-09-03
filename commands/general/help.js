@@ -451,7 +451,7 @@ module.exports = {
 
       giveaway: new EmbedBuilder()
         .setColor('#D3D3D3')
-        .setTitle('<:gwy3:1514705349859606548> **__iveaway__**')
+        .setTitle('<:gwy3:1514705349859606548> **__Giveaway__**')
         .setDescription(
 `**__Giveaways__**
 \`gcreate\` , \`gend\` , \`greroll\` , \`glist\` , \`gdelete\``),
