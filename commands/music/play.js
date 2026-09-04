@@ -41,7 +41,7 @@ module.exports = {
       // =========================
 
       const queueEmbed = new EmbedBuilder()
-        .setColor("#5865F2")
+        .setColor("#FFFFFF")
         .setTitle("Added to Queue")
         .setThumbnail(track.thumbnail || null)
         .setDescription(
