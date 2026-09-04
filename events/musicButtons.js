@@ -14,7 +14,7 @@ module.exports = (client) => {
     // Make sure button is one of our music buttons
     const musicButtons = [
       "music_previous",
-      "music_pause",
+      "music_play",
       "music_skip",
       "music_queue",
       "music_stop",
@@ -72,7 +72,7 @@ module.exports = (client) => {
 // PAUSE / RESUME
 // =========================
 
-if (interaction.customId === "music_pause") {
+if (interaction.customId === "music_play") {
 
   const paused = queue.node.isPaused();
 
@@ -83,7 +83,7 @@ if (interaction.customId === "music_pause") {
 
     rowData.components = rowData.components.map(component => {
 
-      if (component.custom_id === "music_pause") {
+      if (component.custom_id === "music_play") {
         return {
           ...component,
           emoji: paused
