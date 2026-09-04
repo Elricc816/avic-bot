@@ -160,14 +160,12 @@ if (interaction.customId === "music_play") {
       // =========================
 
       if (interaction.customId === "music_stop") {
+  await interaction.message.delete();
 
-        queue.delete();
+  queue.delete();
 
-        return interaction.update({
-          components: []
-        });
+  return;
       }
-
 
       // =========================
       // LOOP
