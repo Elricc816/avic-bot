@@ -69,22 +69,45 @@ module.exports = (client) => {
 
 
       // =========================
-      // PAUSE / RESUME
-      // =========================
+// PAUSE / RESUME
+// =========================
 
-      if (interaction.customId === "music_pause") {
+if (interaction.customId === "music_pause") {
 
-        const paused = queue.node.isPaused();
+  const paused = queue.node.isPaused();
 
-        queue.node.setPaused(!paused);
+  queue.node.setPaused(!paused);
 
-        return interaction.reply({
-          content: paused
-            ? "<:play:1533532009450831945> **__Resumed.__**"
-            : "<:pause:1533532086399533106> **__Paused.__**",
-          ephemeral: true
-        });
+  const updatedComponents = interaction.message.components.map(row => {
+    const rowData = row.toJSON();
+
+    rowData.components = rowData.components.map(component => {
+
+      if (component.custom_id === "music_pause") {
+        return {
+          ...component,
+          emoji: paused
+            ? {
+                id: "1533532086399533106",
+                name: "pause"
+              }
+            : {
+                id: "1533532009450831945",
+                name: "play"
+              }
+        };
       }
+
+      return component;
+    });
+
+    return rowData;
+  });
+
+  return interaction.update({
+    components: updatedComponents
+  });
+}
 
 
       // =========================
