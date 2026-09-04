@@ -59,23 +59,6 @@ module.exports = {
       });
 
       // =========================
-      // NOW PLAYING
-      // =========================
-
-      const nowPlayingEmbed = new EmbedBuilder()
-        .setColor("#5865F2")
-        .setTitle("Now Playing")
-        .setThumbnail(track.thumbnail || null)
-        .setDescription(
-          `<:youtube:1545131580090097725> **${track.title}**\n\n` +
-          `Duration: \`${track.duration || "Unknown"}\`\n` +
-          `Requested by ${message.author}`
-        )
-        .setFooter({
-          text: "Fare Music"
-        });
-
-      // =========================
       // MUSIC BUTTONS
       // =========================
 
