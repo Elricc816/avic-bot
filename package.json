@@ -14,7 +14,7 @@
     "quick.db": "9.1.7",
     "better-sqlite3": "^11.10.0",
     "discord-player": "^7.2.0",
-"discord-player-youtubedlp": "^1.2.1",
+"discord-player-youtubedlp": "latest",
     "ffmpeg-static": "^5.2.0",
     "@snazzah/davey": "^0.1.8",
     "axios": "^1.6.0",
