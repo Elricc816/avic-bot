@@ -18,12 +18,19 @@ module.exports = (client) => {
   // =========================
 
   player.events.on("playerStart", async (queue, track) => {
-
     try {
 
       const channel = queue.metadata?.channel;
-
       if (!channel) return;
+
+      // Delete old control panel
+      if (queue.metadata?.nowPlayingMessage) {
+        try {
+          await queue.metadata.nowPlayingMessage.delete();
+        } catch {}
+
+        queue.metadata.nowPlayingMessage = null;
+      }
 
       const nowPlayingEmbed = new EmbedBuilder()
         .setColor("#5865F2")
@@ -37,10 +44,6 @@ module.exports = (client) => {
         .setFooter({
           text: "Fare Music"
         });
-
-      // =========================
-      // MUSIC BUTTONS
-      // =========================
 
       const row1 = new ActionRowBuilder().addComponents(
 
@@ -91,51 +94,82 @@ module.exports = (client) => {
           .setStyle(ButtonStyle.Secondary)
       );
 
-      const components = [row1, row2];
-
-      // =========================
-      // UPDATE EXISTING MESSAGE
-      // =========================
-
-      if (queue.metadata?.nowPlayingMessage) {
-
-        try {
-
-          const msg = queue.metadata.nowPlayingMessage;
-
-          await msg.edit({
-            embeds: [nowPlayingEmbed],
-            components
-          });
-
-          return;
-
-        } catch {
-          // Message no longer exists
-          queue.metadata.nowPlayingMessage = null;
-        }
-      }
-
-      // =========================
-      // CREATE FIRST MESSAGE
-      // =========================
-
       const msg = await channel.send({
         embeds: [nowPlayingEmbed],
-        components
+        components: [row1, row2]
       });
 
       queue.metadata.nowPlayingMessage = msg;
 
     } catch (error) {
-
       console.error(
         "PLAYER START ERROR:",
         error?.message || String(error)
       );
-
     }
+  });
 
+
+  // =========================
+  // QUEUE ENDED
+  // =========================
+
+  player.events.on("emptyQueue", async (queue) => {
+    try {
+
+      if (queue.metadata?.nowPlayingMessage) {
+        try {
+          await queue.metadata.nowPlayingMessage.delete();
+        } catch {}
+
+        queue.metadata.nowPlayingMessage = null;
+      }
+
+    } catch (error) {
+      console.error(
+        "QUEUE END ERROR:",
+        error?.message || String(error)
+      );
+    }
+  });
+
+
+  // =========================
+  // QUEUE DELETED / STOPPED
+  // =========================
+
+  player.events.on("playerError", async (queue, error) => {
+    console.error(
+      "MUSIC PLAYER ERROR:",
+      error?.message || String(error)
+    );
+  });
+
+
+  // =========================
+  // BOT LEAVES VOICE CHANNEL
+  // =========================
+
+  client.on("voiceStateUpdate", async (oldState, newState) => {
+
+    // Only care about Fare
+    if (oldState.id !== client.user.id) return;
+
+    // Bot was in VC and is now disconnected
+    if (oldState.channelId && !newState.channelId) {
+
+      const queue = player.nodes.get(oldState.guild.id);
+
+      if (!queue) return;
+
+      if (queue.metadata?.nowPlayingMessage) {
+        try {
+          await queue.metadata.nowPlayingMessage.delete();
+        } catch {}
+
+        queue.metadata.nowPlayingMessage = null;
+      }
+    }
   });
 
 };
