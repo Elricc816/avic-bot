@@ -1,9 +1,15 @@
 process.on("unhandledRejection", (err) => {
-  console.error("UNHANDLED REJECTION:", err);
+  console.error(
+    "UNHANDLED REJECTION:",
+    err?.message || String(err)
+  );
 });
 
 process.on("uncaughtException", (err) => {
-  console.error("UNCAUGHT EXCEPTION:", err);
+  console.error(
+    "UNCAUGHT EXCEPTION:",
+    err?.message || String(err)
+  );
 });
 
 console.log("Node Version:", process.version);
@@ -265,7 +271,7 @@ if (message.reference) {
       );
     }
   } catch (err) {
-    console.log(err);
+    console.log("AI CHECK ERROR:", err?.message || String(err));
   }
 }
   
@@ -420,10 +426,13 @@ setTimeout(() => timestamps.delete(message.author.id), cooldown);
 try {
     await command.execute(message, args, client);
 } catch (err) {
-    console.error("PLAY ERROR:", err);
+    console.error(
+        "COMMAND ERROR:",
+        err?.message || String(err)
+    );
 
     message.reply(
-        "<:WarningIcon:1514708751385497721> Error running command!"
+        "<:WarningIcon:1514708751385497721> **__Error running command!__**"
     );
 }
 });
