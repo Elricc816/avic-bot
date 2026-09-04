@@ -294,37 +294,6 @@ if (afkData) {
     });
 }
 
-for (const user of message.mentions.users.values()) {
-
-    const globalKey = `afk_${user.id}`;
-    const serverKey = `afk_${message.guild.id}_${user.id}`;
-
-    let data = await db.get(globalKey);
-    let key = globalKey;
-
-    if (!data) {
-        data = await db.get(serverKey);
-        key = serverKey;
-    }
-
-    if (!data) continue;
-
-    data.mentions = (data.mentions || 0) + 1;
-    await db.set(key, data);
-
-    message.reply({
-        embeds: [
-            new EmbedBuilder()
-                .setColor("#FFCC66")
-                .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-                .setDescription(
-                    `<:WarningIcon:1514708751385497721> **${user.username} is currently AFK**\n\n` +
-                    `<:arrow:1514699753462566953> Reason • ${data.reason}\n` +
-                    `<:timerr:1514699712681218094> Since • <t:${Math.floor(data.since / 1000)}:R>`
-                )
-        ]
-    });
-}
   
 
   if (
