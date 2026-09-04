@@ -70,6 +70,9 @@ player.extractors.register(YouTubeDlpExtractor, {
   agent: {
     forceIPv4: true
   },
+  searchLimit: 1,
+  relatedLimit: 3,
+  infoCacheTtlMs: 300000,
   debug: false
 });
 
