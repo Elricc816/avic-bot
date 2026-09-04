@@ -5,32 +5,33 @@ const {
   ButtonStyle
 } = require("discord.js");
 
-const {
-  useMainPlayer
-} = require("discord-player");
+const { useMainPlayer } = require("discord-player");
 
 module.exports = (client) => {
 
   const player = useMainPlayer();
 
-  // =========================
-  // SONG STARTED
-  // =========================
+  // DELETE CURRENT NOW PLAYING PANEL
+  async function deleteNowPlaying(queue) {
+    const msg = queue.metadata?.nowPlayingMessage;
 
+    if (!msg) return;
+
+    try {
+      await msg.delete();
+    } catch {}
+
+    queue.metadata.nowPlayingMessage = null;
+  }
+
+  // SONG STARTED
   player.events.on("playerStart", async (queue, track) => {
     try {
-
       const channel = queue.metadata?.channel;
       if (!channel) return;
 
-      // Delete old control panel
-      if (queue.metadata?.nowPlayingMessage) {
-        try {
-          await queue.metadata.nowPlayingMessage.delete();
-        } catch {}
-
-        queue.metadata.nowPlayingMessage = null;
-      }
+      // Delete previous panel
+      await deleteNowPlaying(queue);
 
       const nowPlayingEmbed = new EmbedBuilder()
         .setColor("#5865F2")
@@ -46,7 +47,6 @@ module.exports = (client) => {
         });
 
       const row1 = new ActionRowBuilder().addComponents(
-
         new ButtonBuilder()
           .setCustomId("music_previous")
           .setEmoji("<:music_previous:1533525855530258442>")
@@ -74,7 +74,6 @@ module.exports = (client) => {
       );
 
       const row2 = new ActionRowBuilder().addComponents(
-
         new ButtonBuilder()
           .setCustomId("music_loop")
           .setLabel("Loop")
@@ -109,67 +108,31 @@ module.exports = (client) => {
     }
   });
 
-
-  // =========================
-  // QUEUE ENDED
-  // =========================
-
+  // ENTIRE QUEUE FINISHED
   player.events.on("emptyQueue", async (queue) => {
-    try {
-
-      if (queue.metadata?.nowPlayingMessage) {
-        try {
-          await queue.metadata.nowPlayingMessage.delete();
-        } catch {}
-
-        queue.metadata.nowPlayingMessage = null;
-      }
-
-    } catch (error) {
-      console.error(
-        "QUEUE END ERROR:",
-        error?.message || String(error)
-      );
-    }
+    await deleteNowPlaying(queue);
   });
 
+  // BOT DISCONNECTED / LEAVES VC
+  player.events.on("disconnect", async (queue) => {
+    await deleteNowPlaying(queue);
+  });
 
-  // =========================
+  // VOICE CHANNEL BECOMES EMPTY
+  player.events.on("emptyChannel", async (queue) => {
+    await deleteNowPlaying(queue);
+  });
+
   // QUEUE DELETED / STOPPED
-  // =========================
+  player.events.on("queueDelete", async (queue) => {
+    await deleteNowPlaying(queue);
+  });
 
+  // PLAYER ERROR
   player.events.on("playerError", async (queue, error) => {
     console.error(
       "MUSIC PLAYER ERROR:",
       error?.message || String(error)
     );
   });
-
-
-  // =========================
-  // BOT LEAVES VOICE CHANNEL
-  // =========================
-
-  client.on("voiceStateUpdate", async (oldState, newState) => {
-
-    // Only care about Fare
-    if (oldState.id !== client.user.id) return;
-
-    // Bot was in VC and is now disconnected
-    if (oldState.channelId && !newState.channelId) {
-
-      const queue = player.nodes.get(oldState.guild.id);
-
-      if (!queue) return;
-
-      if (queue.metadata?.nowPlayingMessage) {
-        try {
-          await queue.metadata.nowPlayingMessage.delete();
-        } catch {}
-
-        queue.metadata.nowPlayingMessage = null;
-      }
-    }
-  });
-
 };
