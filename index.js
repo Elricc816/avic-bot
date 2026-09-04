@@ -437,4 +437,10 @@ try {
 }
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN)
+  .then(() => {
+    console.log("✅ Discord login successful");
+  })
+  .catch((err) => {
+    console.error("❌ DISCORD LOGIN ERROR:", err?.message || String(err));
+  });
