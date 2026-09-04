@@ -64,7 +64,7 @@ player.extractors.register(YouTubeDlpExtractor, {
   agent: {
     forceIPv4: true
   },
-  debug: true
+  debug: false
 });
 
 client.commands = new Collection();
