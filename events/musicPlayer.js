@@ -34,7 +34,7 @@ module.exports = (client) => {
       await deleteNowPlaying(queue);
 
       const nowPlayingEmbed = new EmbedBuilder()
-        .setColor("#5865F2")
+        .setColor("#FFFFFF")
         .setTitle("Now Playing")
         .setThumbnail(track.thumbnail || null)
         .setDescription(
