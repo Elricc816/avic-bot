@@ -88,12 +88,12 @@ if (interaction.customId === "music_pause") {
           ...component,
           emoji: paused
             ? {
-                id: "1533532086399533106",
-                name: "pause"
-              }
-            : {
                 id: "1533532009450831945",
                 name: "play"
+              }
+            : {
+                id: "1533532086399533106",
+                name: "pause"
               }
         };
       }
