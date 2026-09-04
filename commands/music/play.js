@@ -86,8 +86,8 @@ module.exports = {
           .setStyle(ButtonStyle.Secondary),
 
         new ButtonBuilder()
-          .setCustomId("music_pause")
-          .setEmoji("<:pause:1533532086399533106>")
+          .setCustomId("music_play")
+          .setEmoji("<:play:1533532009450831945>")
           .setStyle(ButtonStyle.Secondary),
 
         new ButtonBuilder()
