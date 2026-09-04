@@ -31,7 +31,8 @@ module.exports = {
             metadata: {
               channel: message.channel
             }
-          }
+          },
+          requestedBy: message.author
         }
       );
 
