@@ -68,7 +68,8 @@ client.player = player;
 
 player.extractors.register(YouTubeDlpExtractor, {
   agent: {
-    forceIPv4: true
+    forceIPv4: true,
+    noUA: false
   },
   searchLimit: 1,
   relatedLimit: 3,
