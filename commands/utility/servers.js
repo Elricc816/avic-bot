@@ -10,7 +10,7 @@ module.exports = {
     async execute(message, args, client) {
 
         // ONLY BOT OWNER CAN USE THIS COMMAND
-        const OWNER_ID = "YOUR_DISCORD_USER_ID";
+        const OWNER_ID = "1530872106399567941";
 
         if (message.author.id !== OWNER_ID) {
             return;
