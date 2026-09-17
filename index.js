@@ -121,7 +121,7 @@ for (const folder of commandFolders) {
   }
 }
 
-client.once('ready', () => {
+client.once('clientReady', () => {
     console.log(`🤖 Fare Bot logged in as ${client.user.tag}`);
 
   require("./events/giveawayManager")(client);
