@@ -1,11 +1,23 @@
-const nodes = [
-  {
-    name: "main",
-    url: "lavalink.oops.wtf",
-    port: 443,
-    auth: "discord.gg/freenode",
-    secure: true
-  }
+const { Shoukaku, Connectors } = require("shoukaku");
+
+const Nodes = [
+    {
+        name: "main",
+        url: "lavalink.heavencloud.in:443",
+        auth: "heavencloud",
+        secure: true
+    }
 ];
 
-module.exports = { nodes };
+module.exports = (client) => {
+
+    const shoukaku = new Shoukaku(new Connectors.DiscordJS(client), Nodes);
+
+    shoukaku.on("ready", (name) => console.log(`Lavalink node "${name}" is ready.`));
+    shoukaku.on("error", (name, error) => console.error(`Lavalink node "${name}" error:`, error));
+    shoukaku.on("close", (name, code, reason) => console.log(`Lavalink node "${name}" closed: ${code} ${reason}`));
+    shoukaku.on("disconnect", (name) => console.log(`Lavalink node "${name}" disconnected.`));
+
+    client.shoukaku = shoukaku;
+    client.queues = new Map(); // guildId -> { player, tracks: [], textChannel, playing, current }
+};
