@@ -67,6 +67,8 @@ for (const file of eventFiles) {
   }
 }
 
+require("./events/lavalink")(client); 
+
 const prefix = ',';
 
 // Load all commands from folders
