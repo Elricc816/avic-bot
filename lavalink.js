@@ -14,10 +14,9 @@ module.exports = (client) => {
     const shoukaku = new Shoukaku(new Connectors.DiscordJS(client), Nodes);
 
     shoukaku.on("ready", (name) => console.log(`Lavalink node "${name}" is ready.`));
-    shoukaku.on("error", (name, error) => console.error(`Lavalink node "${name}" error:`, error));
+    shoukaku.on("error", (name, error) => console.error(`Lavalink node "${name}" error:`, error?.message || String(error)));
     shoukaku.on("close", (name, code, reason) => console.log(`Lavalink node "${name}" closed: ${code} ${reason}`));
     shoukaku.on("disconnect", (name) => console.log(`Lavalink node "${name}" disconnected.`));
 
     client.shoukaku = shoukaku;
-    client.queues = new Map(); // guildId -> { player, tracks: [], textChannel, playing, current }
 };
