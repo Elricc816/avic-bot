@@ -66,7 +66,6 @@ for (const file of eventFiles) {
     event(client);
   }
 }
-require("./events/lavalink")(client);
 
 const prefix = ',';
 
