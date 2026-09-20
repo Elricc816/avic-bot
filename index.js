@@ -20,15 +20,6 @@ const {
   Collection
 } = require('discord.js');
 
-const {
-  Player
-} = require('discord-player');
-
-const {
-  YouTubeDlpExtractor,
-  setFFmpegPath
-} = require('discord-player-youtubedlp');
-
 const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const path = require('path');
@@ -56,26 +47,7 @@ const client = new Client({
   allowedMentions: { repliedUser: false }
 });
 
-// =========================
-// MUSIC PLAYER
-// =========================
-
-setFFmpegPath(ffmpegPath);
-
-const player = new Player(client);
-
-client.player = player;
-
-player.extractors.register(YouTubeDlpExtractor, {
-  agent: {
-    forceIPv4: true,
-    noUA: false
-  },
-  searchLimit: 1,
-  relatedLimit: 3,
-  infoCacheTtlMs: 300000,
-  debug: false
-});
+client.queues = new Map();
 
 client.commands = new Collection();
 const cooldowns = new Collection();
