@@ -59,15 +59,15 @@ const eventPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventPath).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
+  if (file === "lavalink.js") continue;
+
   const filePath = path.join(eventPath, file);
   const event = require(filePath);
 
   if (typeof event === "function") {
     event(client);
   }
-}
-
-require("./events/lavalink")(client); 
+} 
 
 const prefix = ',';
 
