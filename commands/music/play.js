@@ -5,8 +5,9 @@ module.exports = {
     name: "play",
     aliases: ["p"],
 
-    async execute(message, args, client) {
-
+    async execute(message, args) {
+    const client = message.client;
+        
         if (!args.length) {
             return message.reply(
                 "<a:spider_cross:1514728338701287640> **__Give me a song name or URL.__**"
