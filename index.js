@@ -1,15 +1,13 @@
 process.on("unhandledRejection", (err) => {
-  console.error(
-    "UNHANDLED REJECTION:",
-    err?.message || String(err)
-  );
+  console.error("========== UNHANDLED REJECTION ==========");
+  console.error(err);
+  console.error(err?.stack);
 });
 
 process.on("uncaughtException", (err) => {
-  console.error(
-    "UNCAUGHT EXCEPTION:",
-    err?.message || String(err)
-  );
+  console.error("========== UNCAUGHT EXCEPTION ==========");
+  console.error(err);
+  console.error(err?.stack);
 });
 
 console.log("Node Version:", process.version);
