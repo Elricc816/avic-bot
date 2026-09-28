@@ -23,7 +23,7 @@ module.exports = {
 
 Visit Fare's official website for information, updates, documentation and more.
 
-> <:arrow:1514699753462566953> **Website:** https://farebot.vercel.app
+> <:arrow:1514699753462566953> **Website:** https://farewaves.vercel.app
 > <:arrow:1514699753462566953> **Documentation:** Coming Soon
 > <:arrow:1514699753462566953> **Status Page:** Coming Soon`
             )
@@ -36,17 +36,17 @@ Visit Fare's official website for information, updates, documentation and more.
             new ButtonBuilder()
                 .setLabel("Website")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://farebot.vercel.app"),
+                .setURL("https://farewaves.vercel.app"),
 
             new ButtonBuilder()
                 .setLabel("Documentation")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://farebot.vercel.app/docs"),
+                .setURL("https://farewaves.vercel.app/docs"),
 
             new ButtonBuilder()
                 .setLabel("Status")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://farebot.vercel.app"),
+                .setURL("https://farewaves.vercel.app"),
 
             new ButtonBuilder()
                 .setLabel("Support")
