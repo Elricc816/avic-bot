@@ -73,14 +73,14 @@ Bot Developed by <@1530872106399567941>`
       new ButtonBuilder()
         .setLabel("Website")
         .setStyle(ButtonStyle.Link)
-        .setURL("https://farebot.vercel.app")
+        .setURL("https://farewaves.vercel.app")
     );
 
     const row2 = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setLabel("Docs")
         .setStyle(ButtonStyle.Link)
-        .setURL("https://farebot.vercel.app/"),
+        .setURL("https://farewaves.vercel.app/"),
 
       new ButtonBuilder()
         .setLabel("Support")
