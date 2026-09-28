@@ -14,7 +14,7 @@ const ICON_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/154
 const OWNER_ID = '1530872106399567941';
 
 const SUPPORT_URL = 'https://discord.gg/46Vn9pdtPF';
-const WEBSITE_URL = 'https://farebot.vercel.app/';
+const WEBSITE_URL = 'https://farewaves.vercel.app/';
 
 module.exports = {
   name: "help",
