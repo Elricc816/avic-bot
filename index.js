@@ -17,17 +17,18 @@ const {
   GatewayIntentBits,
   Collection,
   EmbedBuilder
-} = require('discord.js');
+} = require("discord.js");
 
-const ffmpegPath = require('ffmpeg-static');
-const fs = require('fs');
-const path = require('path');
+const ffmpegPath = require("ffmpeg-static");
+const fs = require("fs");
+const path = require("path");
 
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
 
 setInterval(() => {
   const mem = process.memoryUsage();
+
   console.log(
     "RAM:",
     Math.round(mem.rss / 1024 / 1024) + "MB"
@@ -43,19 +44,28 @@ const client = new Client({
     GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildVoiceStates
   ],
-  allowedMentions: { repliedUser: false }
+  allowedMentions: {
+    repliedUser: false
+  }
 });
 
 client.queues = new Map();
 
 client.commands = new Collection();
+
 const cooldowns = new Collection();
 
+const prefix = ",";
+
 // =========================
-// EVENT LOADER (ADD THIS)
+// EVENT LOADER
 // =========================
-const eventPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventPath).filter(file => file.endsWith('.js'));
+
+const eventPath = path.join(__dirname, "events");
+
+const eventFiles = fs
+  .readdirSync(eventPath)
+  .filter(file => file.endsWith(".js"));
 
 for (const file of eventFiles) {
   if (file === "lavalink.js") continue;
@@ -66,17 +76,23 @@ for (const file of eventFiles) {
   if (typeof event === "function") {
     event(client);
   }
-} 
+}
 
-const prefix = ',';
+// =========================
+// COMMAND LOADER
+// =========================
 
-// Load all commands from folders
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
   const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+  if (!fs.statSync(commandsPath).isDirectory()) continue;
+
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter(file => file.endsWith(".js"));
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);
@@ -94,85 +110,102 @@ for (const folder of commandFolders) {
   }
 }
 
-client.once('clientReady', () => {
-    console.log(`🤖 Fare Bot logged in as ${client.user.tag}`);
+// =========================
+// BOT READY
+// =========================
+
+client.once("clientReady", () => {
+  console.log(`🤖 Fare Bot logged in as ${client.user.tag}`);
 
   require("./events/giveawayManager")(client);
 
-const updateStatus = () => {
+  const updateStatus = () => {
     const users = client.guilds.cache.reduce(
-        (total, guild) => total + guild.memberCount,
-        0
+      (total, guild) => total + guild.memberCount,
+      0
     );
 
     client.user.setPresence({
-        status: "dnd",
-        activities: [
-            {
-                name: `${users} users on Fare Waves`,
-                type: 3
-            }
-        ]
+      status: "dnd",
+      activities: [
+        {
+          name: `${users} users on Fare Waves`,
+          type: 3
+        }
+      ]
     });
-};
+  };
 
-updateStatus();
+  updateStatus();
 });
 
-client.on('messageCreate', async message => {
-
-  const { EmbedBuilder } = require("discord.js");
-
 // =========================
-// REMOVE GLOBAL AFK
+// MESSAGE CREATE
 // =========================
-const globalAfk = await db.get(`afk_${message.author.id}`);
 
-if (globalAfk) {
+client.on("messageCreate", async (message) => {
+
+  // =========================
+  // REMOVE GLOBAL AFK
+  // =========================
+
+  const globalAfk = await db.get(`afk_${message.author.id}`);
+
+  if (globalAfk) {
     await db.delete(`afk_${message.author.id}`);
 
     message.reply({
-        embeds: [
-            new EmbedBuilder()
-                .setColor("#57F287")
-                .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-                .setDescription(
-                    `<:Tick:1514714190500335677> Welcome back ${message.author} from Global AFK\n\n` +
-                    `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
-                    `<:info:1514699288674828310> Reason • ${globalAfk.reason}\n` +
-                    `<:dot:1514706694079254730> Mentions • **${globalAfk.mentions || 0}**`
-                )
-        ]
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#57F287")
+          .setThumbnail(
+            message.author.displayAvatarURL({ dynamic: true })
+          )
+          .setDescription(
+            `<:Tick:1514714190500335677> Welcome back ${message.author} from Global AFK\n\n` +
+            `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
+            `<:info:1514699288674828310> Reason • ${globalAfk.reason}\n` +
+            `<:dot:1514706694079254730> Mentions • **${globalAfk.mentions || 0}**`
+          )
+      ]
     });
-}
+  }
 
-// =========================
-// REMOVE SERVER AFK
-// =========================
-const serverAfk = await db.get(`afk_${message.guild.id}_${message.author.id}`);
+  // =========================
+  // REMOVE SERVER AFK
+  // =========================
 
-if (serverAfk) {
-    await db.delete(`afk_${message.guild.id}_${message.author.id}`);
+  const serverAfk = await db.get(
+    `afk_${message.guild.id}_${message.author.id}`
+  );
+
+  if (serverAfk) {
+    await db.delete(
+      `afk_${message.guild.id}_${message.author.id}`
+    );
 
     message.reply({
-        embeds: [
-            new EmbedBuilder()
-                .setColor("#A9C7FF")
-                .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-                .setDescription(
-                    `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
-                    `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
-                    `<:info:1514699288674828310> Reason • ${serverAfk.reason}\n` +
-                    `<:dot:1514706694079254730> Mentions • **${serverAfk.mentions || 0}**`
-                )
-        ]
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#A9C7FF")
+          .setThumbnail(
+            message.author.displayAvatarURL({ dynamic: true })
+          )
+          .setDescription(
+            `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
+            `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
+            `<:info:1514699288674828310> Reason • ${serverAfk.reason}\n` +
+            `<:dot:1514706694079254730> Mentions • **${serverAfk.mentions || 0}**`
+          )
+      ]
     });
-}
+  }
 
-// =========================
-// AFK MENTION SYSTEM
-// =========================
-for (const user of message.mentions.users.values()) {
+  // =========================
+  // AFK MENTION SYSTEM
+  // =========================
+
+  for (const user of message.mentions.users.values()) {
 
     const globalKey = `afk_${user.id}`;
     const serverKey = `afk_${message.guild.id}_${user.id}`;
@@ -181,90 +214,136 @@ for (const user of message.mentions.users.values()) {
     let key = globalKey;
 
     if (!data) {
-        data = await db.get(serverKey);
-        key = serverKey;
+      data = await db.get(serverKey);
+      key = serverKey;
     }
 
     if (!data) continue;
 
-    // Increase mention count
     data.mentions = (data.mentions || 0) + 1;
+
     await db.set(key, data);
 
     message.reply({
-        embeds: [
-            new EmbedBuilder()
-                .setColor("#FFCC66")
-                .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-                .setDescription(
-                    `<:WarningIcon:1514708751385497721> **${user.username} is currently AFK**\n\n` +
-                    `<:arrow:1514699753462566953> Reason • ${data.reason}\n` +
-                    `<:timerr:1514699712681218094> Since • <t:${Math.floor(data.since / 1000)}:R>`
-                )
-        ]
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#FFCC66")
+          .setThumbnail(
+            user.displayAvatarURL({ dynamic: true })
+          )
+          .setDescription(
+            `<:WarningIcon:1514708751385497721> **${user.username} is currently AFK**\n\n` +
+            `<:arrow:1514699753462566953> Reason • ${data.reason}\n` +
+            `<:timerr:1514699712681218094> Since • <t:${Math.floor(data.since / 1000)}:R>`
+          )
+      ]
     });
-                     }
-  
+  }
+
+  // =========================
+  // IGNORE BOTS
+  // =========================
+
   if (message.author.bot) return;
 
-  await db.add(`stats.${message.author.id}.messages`, 1);
-await db.add(`stats.${message.author.id}.xp`, 5);
+  // =========================
+  // STATS / XP
+  // =========================
 
-if (message.reference) {
-  try {
-    const replied = await message.channel.messages.fetch(
-      message.reference.messageId
-    );
+  await db.add(
+    `stats.${message.author.id}.messages`,
+    1
+  );
 
-    const isAiMessage =
-      replied.reactions.cache.some(
-        r => r.emoji.id === "1514699727072133233"
+  await db.add(
+    `stats.${message.author.id}.xp`,
+    5
+  );
+
+  // =========================
+  // AI REPLY SYSTEM
+  // =========================
+
+  if (message.reference) {
+    try {
+      const replied = await message.channel.messages.fetch(
+        message.reference.messageId
       );
 
-    if (isAiMessage) {
-      const aiCommand = client.commands.get("ai");
+      const isAiMessage =
+        replied.reactions.cache.some(
+          r => r.emoji.id === "1514699727072133233"
+        );
 
-      return aiCommand.execute(
-        message,
-        message.content.split(" ")
+      if (isAiMessage) {
+        const aiCommand = client.commands.get("ai");
+
+        return aiCommand.execute(
+          message,
+          message.content.split(" ")
+        );
+      }
+    } catch (err) {
+      console.log(
+        "AI CHECK ERROR:",
+        err?.message || String(err)
       );
     }
-  } catch (err) {
-    console.log("AI CHECK ERROR:", err?.message || String(err));
   }
-}
-  
+
+  // =========================
+  // CHAT HISTORY
+  // =========================
+
   if (message.author.bot) return;
-  db.push(`chat_${message.author.id}`, message.content);
 
-  const afkData = await db.get(`afk_${message.author.id}`);
+  db.push(
+    `chat_${message.author.id}`,
+    message.content
+  );
 
-if (afkData) {
-    await db.delete(`afk_${message.author.id}`);
+  // =========================
+  // SECOND AFK CHECK
+  // =========================
+
+  const afkData = await db.get(
+    `afk_${message.author.id}`
+  );
+
+  if (afkData) {
+    await db.delete(
+      `afk_${message.author.id}`
+    );
 
     message.reply({
-        embeds: [
-            new EmbedBuilder()
-                .setColor("#D3D3D3")
-                .setDescription(`<:Tick:1514714190500335677> Welcome back ${message.author}`)
-        ]
+      embeds: [
+        new EmbedBuilder()
+          .setColor("#D3D3D3")
+          .setDescription(
+            `<:Tick:1514714190500335677> Welcome back ${message.author}`
+          )
+      ]
     }).then(m => {
-        setTimeout(() => m.delete().catch(() => {}), 5000);
+      setTimeout(() => {
+        m.delete().catch(() => {});
+      }, 5000);
     });
-}
+  }
 
-  
+  // =========================
+  // BOT MENTION / PREFIX INFO
+  // =========================
 
   if (
     message.content === `<@${client.user.id}>` ||
     message.content === `<@!${client.user.id}>`
   ) {
 
-    const { EmbedBuilder } = require('discord.js');
-
     const embed = new EmbedBuilder()
-      .setColor('#D3D3D3')
-      .setTitle('<:bot1:1514699532686852227> | Prefix Info')
+      .setColor("#D3D3D3")
+      .setTitle(
+        "<:bot1:1514699532686852227> | Prefix Info"
+      )
       .setDescription(
 `<:dot:1514706694079254730> **Prefix Help**
 Hey ${message.author}! Here are my current prefixes:
@@ -278,97 +357,144 @@ Hey ${message.author}! Here are my current prefixes:
       );
 
     const pingMsg = await message.reply({
-  embeds: [embed]
-});
+      embeds: [embed]
+    });
 
-setTimeout(() => {
-  pingMsg.delete().catch(() => {});
-}, 15000);
+    setTimeout(() => {
+      pingMsg.delete().catch(() => {});
+    }, 15000);
 
-return;
+    return;
   }
 
- const isNoPrefix =
+  // =========================
+  // PREFIX / NO PREFIX
+  // =========================
+
+  const isNoPrefix =
     message.author.id === "1530872106399567941" ||
     await db.get(`noprefix_${message.author.id}`);
 
-let args;
-let commandName;
+  let args;
+  let commandName;
 
-if (message.content.startsWith(prefix)) {
-    args = message.content.slice(prefix.length).trim().split(/ +/);
+  if (message.content.startsWith(prefix)) {
+
+    args = message.content
+      .slice(prefix.length)
+      .trim()
+      .split(/ +/);
+
     commandName = args.shift().toLowerCase();
-} else if (isNoPrefix) {
-    args = message.content.trim().split(/ +/);
+
+  } else if (isNoPrefix) {
+
+    args = message.content
+      .trim()
+      .split(/ +/);
+
     commandName = args.shift().toLowerCase();
-} else {
+
+  } else {
     return;
-}
+  }
 
-const command = client.commands.get(commandName);
+  const command = client.commands.get(commandName);
 
   if (!command) return;
-  
+
+  // =========================
+  // COOLDOWN
+  // =========================
+
   const cooldown = 5000;
 
-if (!cooldowns.has(command.name)) {
-    cooldowns.set(command.name, new Collection());
-}
+  if (!cooldowns.has(command.name)) {
+    cooldowns.set(
+      command.name,
+      new Collection()
+    );
+  }
 
-const now = Date.now();
-const timestamps = cooldowns.get(command.name);
+  const now = Date.now();
+  const timestamps = cooldowns.get(command.name);
 
-if (timestamps.has(message.author.id)) {
+  if (timestamps.has(message.author.id)) {
 
-    const expirationTime = timestamps.get(message.author.id) + cooldown;
+    const expirationTime =
+      timestamps.get(message.author.id) + cooldown;
 
     if (now < expirationTime) {
 
-        const timeLeft = ((expirationTime - now) / 1000).toFixed(2);
+      const timeLeft =
+        ((expirationTime - now) / 1000).toFixed(2);
 
-        const cooldownEmbed = new EmbedBuilder()
-            .setColor("#FF7F7F")
-            .setTitle("You can't use this command!")
-            .setDescription(
+      const cooldownEmbed = new EmbedBuilder()
+        .setColor("#FF7F7F")
+        .setTitle("You can't use this command!")
+        .setDescription(
 `<a:spider_cross:1514728338701287640> You are under cooldown to this command!
 
 <:arrow:1514699753462566953> Cooldown ~ \`${timeLeft} s\``
-            );
+        );
 
-        const msg = await message.reply({
-            embeds: [cooldownEmbed]
-        });
+      const msg = await message.reply({
+        embeds: [cooldownEmbed]
+      });
 
-        setTimeout(() => {
-            msg.delete().catch(() => {});
-        }, 10000);
+      setTimeout(() => {
+        msg.delete().catch(() => {});
+      }, 10000);
 
-        return;
+      return;
     }
-}
+  }
 
-timestamps.set(message.author.id, now);
+  timestamps.set(
+    message.author.id,
+    now
+  );
 
-setTimeout(() => timestamps.delete(message.author.id), cooldown);
+  setTimeout(() => {
+    timestamps.delete(message.author.id);
+  }, cooldown);
 
-try {
-    await command.execute(message, args, client);
-} catch (err) {
+  // =========================
+  // EXECUTE COMMAND
+  // =========================
+
+  try {
+
+    await command.execute(
+      message,
+      args,
+      client
+    );
+
+  } catch (err) {
+
     console.error(
-        "COMMAND ERROR:",
-        err?.message || String(err)
+      "COMMAND ERROR:",
+      err?.message || String(err)
     );
 
     message.reply(
-        "<:WarningIcon:1514708751385497721> **__Error running command!__**"
+      "<:WarningIcon:1514708751385497721> **__Error running command!__**"
     );
-}
+  }
 });
+
+// =========================
+// LOGIN
+// =========================
 
 client.login(process.env.TOKEN)
   .then(() => {
     console.log("✅ Discord login successful");
   })
   .catch((err) => {
-    console.error("❌ DISCORD LOGIN ERROR:", err?.message || String(err));
+    console.error(
+      "❌ DISCORD LOGIN ERROR:",
+      err?.message || String(err)
+    );
   });
