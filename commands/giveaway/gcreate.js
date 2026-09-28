@@ -68,7 +68,7 @@ module.exports = {
         );
 
             const embed = new EmbedBuilder()
-            .setColor("#2FD6D6")
+            .setColor("#FFFFFF")
                 .setThumbnail(message.guild.iconURL({ dynamic: true, size: 1024 }))
                .setTitle(`<a:giftt:1535203788913119272> ${prize} <a:giftt:1535203788913119272>`)
             .setDescription(
@@ -79,7 +79,7 @@ module.exports = {
 <a:BlackDot:1514727923175657654> React with **<a:booper:1535203898485112862>** below to participate.`
             )
             .setFooter({
-                text: "Developed by Elric"
+                text: "Developed by Zen."
             })
             .setTimestamp();
 
