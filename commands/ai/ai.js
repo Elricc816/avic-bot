@@ -3,84 +3,61 @@ const { QuickDB } = require("quick.db");
 const Groq = require("groq-sdk");
 
 const db = new QuickDB();
-const cooldown = new Map();
 
 const groq = new Groq({
 apiKey: process.env.GROQ_API_KEY
 });
+
+const cooldown = new Map();
 
 module.exports = {
 name: "ai",
 aliases: ["ask", "chat"],
 
 async execute(message, args) {
-
     const userId = message.author.id;
     const query = args.join(" ").trim();
 
-    // HELP
     if (!query) {
-        const embed = new EmbedBuilder()
-            .setColor("#D3D3D3")
-            .setTitle("<:info:1514699288674828310> AI Command Help")
-            .setDescription(
-
-"**\"``yml
-<..> <required> | [..] [optional]
-```**
-
-«`,ai <query>`»
-
-<:arrow:1514699753462566953> Ask Fare anything.`
-);
-
         return message.reply({
-            embeds: [embed]
+            embeds: [
+                new EmbedBuilder()
+                    .setColor("#D3D3D3")
+                    .setTitle("<:info:1514699288674828310> AI Command Help")
+                    .setDescription(
+                        [
+                            "Ask Fare anything.",
+                            "",
+                            "**Usage**",
+                            "`,ai <question>`",
+                            "",
+                            "**Aliases**",
+                            "`,ask <question>`",
+                            "`,chat <question>`"
+                        ].join("\n")
+                    )
+            ]
         });
     }
 
-    // COOLDOWN
-    if (cooldown.has(userId)) {
+    const now = Date.now();
+    const lastUsed = cooldown.get(userId);
 
-        const remaining =
-            cooldown.get(userId) - Date.now();
+    if (lastUsed && now - lastUsed < 5000) {
+        const timeLeft = ((5000 - (now - lastUsed)) / 1000).toFixed(1);
 
-        if (remaining > 0) {
-            return message.reply(
-                `<a:clockk:1514734530282520647> Wait **${Math.ceil(
-                    remaining / 1000
-                )}s** before using Fare again.`
-            );
-        }
+        return message.reply(
+            `<a:clockk:1514734530282520647> **Please wait before using AI again!**\n\n<:arrow:1514699753462566953> Cooldown ~ \`${timeLeft} s\``
+        );
     }
+
+    cooldown.set(userId, now);
 
     const loading = await message.reply(
         "<a:loading_Google:1514727933183524964> Typing..."
     );
 
-    try {
-
-        // LOAD MEMORY
-        let history = await db.get(`chat_${userId}`);
-
-        if (!Array.isArray(history)) {
-            history = [];
-        }
-
-        history = history
-            .filter(
-                x =>
-                    x &&
-                    typeof x === "object" &&
-                    typeof x.role === "string" &&
-                    typeof x.content === "string"
-            )
-            .slice(-10);
-
-        // FARE PERSONALITY
-        const systemPrompt = `
-
-You are Fare, an intelligent AI assistant built for Discord.
+    const systemPrompt = `You are Fare, an intelligent AI assistant built for Discord.
 
 IDENTITY:
 
@@ -141,7 +118,7 @@ If someone asks about Fare's commands:
 
 If someone is confused about Fare or wants to learn more about the bot, tell them they can visit:
 
-https://farewaves.vercel.app/
+https://farebot.vercel.app/
 
 You may mention the website when it is relevant.
 
@@ -150,13 +127,13 @@ If someone asks about a command or feature that you do not know exists, do not i
 OWNER:
 If asked who created, developed, owns, or made you:
 
-- Say that Zen is the owner/creator of Fare.
+- Say that Elric is the owner/creator of Fare.
 
 If asked who you are:
 
 - Say that you are Fare, an AI assistant running as a Discord bot.
 
-Do not repeatedly mention Zen unless the question is specifically about the owner/creator.
+Do not repeatedly mention Elric unless the question is specifically about the owner/creator.
 
 SAFETY:
 
@@ -186,25 +163,34 @@ SERIOUS QUESTIONS:
 GOAL:
 Fare should feel like a reliable, modern AI assistant inside Discord.
 It should behave naturally like an AI, help users with general questions and coding,
-and also understand and explain the Fare Discord bot and its commands.
-`;
+and also understand and explain the Fare Discord bot and its commands.`;
 
-        // BUILD CONVERSATION
-        const conversation = history
-            .map(x => {
-                const role =
-                    x.role === "assistant"
-                        ? "Fare"
-                        : "User";
+    try {
+        const history = await db.get(`chat_${userId}`);
 
-                return `${role}: ${x.content}`;
+        const validHistory = Array.isArray(history)
+            ? history.filter(
+                  item =>
+                      item &&
+                      typeof item === "object" &&
+                      typeof item.role === "string" &&
+                      typeof item.content === "string"
+              )
+            : [];
+
+        const previousMessages = validHistory.slice(-10);
+
+        const conversation = previousMessages
+            .map(item => {
+                const speaker =
+                    item.role === "assistant" ? "Fare" : "User";
+
+                return `${speaker}: ${item.content}`;
             })
-            .join("\n\n");
+            .join("\n");
 
-        // GROQ
         const response = await groq.chat.completions.create({
             model: "openai/gpt-oss-20b",
-
             messages: [
                 {
                     role: "system",
@@ -228,94 +214,52 @@ ${query}
             response.choices?.[0]?.message?.content?.trim();
 
         if (!reply) {
-            return loading.edit(
-                "❌ Fare couldn't generate a response. Try again."
-            );
+            throw new Error("AI returned an empty response.");
         }
 
-        // SAVE MEMORY
-        history.push({
-            role: "user",
-            content: query
-        });
+        await db.set(`chat_${userId}`, [
+            ...previousMessages,
+            {
+                role: "user",
+                content: query
+            },
+            {
+                role: "assistant",
+                content: reply
+            }
+        ].slice(-12));
 
-        history.push({
-            role: "assistant",
-            content: reply
-        });
+        await loading.delete().catch(() => {});
 
-        await db.set(
-            `chat_${userId}`,
-            history.slice(-12)
-        );
+        const chunks = reply.match(/[\s\S]{1,2000}/g) || [];
 
-        // COOLDOWN
-        cooldown.set(
-            userId,
-            Date.now() + 5000
-        );
+        for (const chunk of chunks) {
+            const sent = await message.channel.send(chunk);
 
+            const emoji = message.client.emojis.cache.get(
+                "1514699727072133233"
+            );
+
+            if (emoji) {
+                await sent.react(emoji).catch(() => {});
+            }
+        }
+    } catch (err) {
+        console.error("AI ERROR:", err);
+
+        await loading.edit(
+            "<:WarningIcon:1514708751385497721> **__Error generating AI response!__**"
+        ).catch(() => {});
+
+        if (err?.status === 429) {
+            await loading.edit(
+                "<:WarningIcon:1514708751385497721> **AI is currently rate limited. Please try again later.**"
+            ).catch(() => {});
+        }
+    } finally {
         setTimeout(() => {
             cooldown.delete(userId);
         }, 5000);
-
-        // DISCORD 2000 CHARACTER LIMIT
-        const chunks = [];
-
-        for (
-            let i = 0;
-            i < reply.length;
-            i += 2000
-        ) {
-            chunks.push(
-                reply.slice(i, i + 2000)
-            );
-        }
-
-        // FIRST MESSAGE
-        await loading.edit(chunks[0]);
-
-        // AI REACTION
-        const aiEmoji = message.client.emojis.cache.get(
-            "1514699727072133233"
-        );
-
-        if (aiEmoji) {
-            await loading.react(aiEmoji).catch(() => {});
-        }
-
-        // REMAINING CHUNKS
-        for (
-            let i = 1;
-            i < chunks.length;
-            i++
-        ) {
-            await message.channel.send(
-                chunks[i]
-            );
-        }
-
-    } catch (error) {
-
-        console.error(
-            "FARE AI ERROR:",
-            error?.message || error
-        );
-
-        let errorMessage =
-            "❌ Fare is having trouble right now. Try again shortly.";
-
-        if (
-            error?.status === 429 ||
-            error?.message?.includes("429")
-        ) {
-            errorMessage =
-                "⏳ Fare is temporarily rate-limited. Try again in a moment.";
-        }
-
-        return loading.edit(
-            errorMessage
-        );
     }
 }
 
