@@ -101,32 +101,23 @@ client.once('clientReady', () => {
     let statusIndex = 0;
 
 const updateStatus = () => {
-    const servers = client.guilds.cache.size;
     const users = client.guilds.cache.reduce(
         (total, guild) => total + guild.memberCount,
         0
     );
 
-    const statuses = [
-        `${users} users on Fare Waves`
-    ];
-
     client.user.setPresence({
         status: "dnd",
         activities: [
             {
-                name: statuses[statusIndex],
+                name: `${users} users on Fare Waves`,
                 type: 3
             }
         ]
     });
-
-    statusIndex = (statusIndex + 1) % statuses.length;
 };
 
 updateStatus();
-setInterval(updateStatus, 15000);
-});
 
 client.on('messageCreate', async message => {
 
