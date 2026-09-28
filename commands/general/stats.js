@@ -83,7 +83,7 @@ A total of **${commands}** commands are loaded and operational.`
             new ButtonBuilder()
                 .setLabel("Website")
                 .setStyle(ButtonStyle.Link)
-                .setURL("https://farebot.vercel.app"),
+                .setURL("https://farewaves.vercel.app"),
 
             new ButtonBuilder()
                 .setLabel("Support")
