@@ -501,7 +501,6 @@ Hey ${message.author}! Here are my current prefixes:
         }
     });
 });
-});
 
 // =========================
 // LOGIN
