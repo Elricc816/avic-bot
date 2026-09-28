@@ -108,13 +108,7 @@ const updateStatus = () => {
     );
 
     const statuses = [
-        "You click delete, I click ban.",
-        "🔗 farebot.vercel.app",
-        `Watching ${servers} servers.`,
-        `With ${users} users.`,
-        "Minimal. Powerful. Fare",
-        ",help | Counting the Stars",
-        "🔗 dsc.gg/farehq"
+        `${users} users on Fare Waves`
     ];
 
     client.user.setPresence({
@@ -122,7 +116,7 @@ const updateStatus = () => {
         activities: [
             {
                 name: statuses[statusIndex],
-                type: 4
+                type: 3
             }
         ]
     });
