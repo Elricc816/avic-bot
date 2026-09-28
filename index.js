@@ -52,7 +52,6 @@ const client = new Client({
 client.queues = new Map();
 
 client.commands = new Collection();
-
 const cooldowns = new Collection();
 
 const prefix = ",";
@@ -63,18 +62,23 @@ const prefix = ",";
 
 const eventPath = path.join(__dirname, "events");
 
-const eventFiles = fs
-  .readdirSync(eventPath)
-  .filter(file => file.endsWith(".js"));
+if (fs.existsSync(eventPath)) {
+  const eventFiles = fs
+    .readdirSync(eventPath)
+    .filter(file => file.endsWith(".js"));
 
-for (const file of eventFiles) {
-  if (file === "lavalink.js") continue;
+  for (const file of eventFiles) {
 
-  const filePath = path.join(eventPath, file);
-  const event = require(filePath);
+    // Loaded separately below
+    if (file === "lavalink.js") continue;
+    if (file === "giveawayManager.js") continue;
 
-  if (typeof event === "function") {
-    event(client);
+    const filePath = path.join(eventPath, file);
+    const event = require(filePath);
+
+    if (typeof event === "function") {
+      event(client);
+    }
   }
 }
 
@@ -83,27 +87,51 @@ for (const file of eventFiles) {
 // =========================
 
 const foldersPath = path.join(__dirname, "commands");
-const commandFolders = fs.readdirSync(foldersPath);
 
-for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
+if (fs.existsSync(foldersPath)) {
 
-  if (!fs.statSync(commandsPath).isDirectory()) continue;
+  const commandFolders = fs
+    .readdirSync(foldersPath)
+    .filter(folder => {
+      return fs.statSync(
+        path.join(foldersPath, folder)
+      ).isDirectory();
+    });
 
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter(file => file.endsWith(".js"));
+  for (const folder of commandFolders) {
 
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
+    const commandsPath = path.join(
+      foldersPath,
+      folder
+    );
 
-    if (command.name) {
-      client.commands.set(command.name, command);
+    const commandFiles = fs
+      .readdirSync(commandsPath)
+      .filter(file => file.endsWith(".js"));
+
+    for (const file of commandFiles) {
+
+      const filePath = path.join(
+        commandsPath,
+        file
+      );
+
+      const command = require(filePath);
+
+      if (!command || !command.name) continue;
+
+      client.commands.set(
+        command.name,
+        command
+      );
 
       if (Array.isArray(command.aliases)) {
+
         for (const alias of command.aliases) {
-          client.commands.set(alias, command);
+          client.commands.set(
+            alias,
+            command
+          );
         }
       }
     }
@@ -115,11 +143,20 @@ for (const folder of commandFolders) {
 // =========================
 
 client.once("clientReady", () => {
-  console.log(`🤖 Fare Bot logged in as ${client.user.tag}`);
 
+  console.log(
+    `🤖 Fare Bot logged in as ${client.user.tag}`
+  );
+
+  // Giveaway manager
   require("./events/giveawayManager")(client);
 
+  // =========================
+  // SINGLE STATUS
+  // =========================
+
   const updateStatus = () => {
+
     const users = client.guilds.cache.reduce(
       (total, guild) => total + guild.memberCount,
       0
@@ -127,6 +164,7 @@ client.once("clientReady", () => {
 
     client.user.setPresence({
       status: "dnd",
+
       activities: [
         {
           name: `${users} users on Fare Waves`,
@@ -149,18 +187,28 @@ client.on("messageCreate", async (message) => {
   // REMOVE GLOBAL AFK
   // =========================
 
-  const globalAfk = await db.get(`afk_${message.author.id}`);
+  const globalAfk = await db.get(
+    `afk_${message.author.id}`
+  );
 
   if (globalAfk) {
-    await db.delete(`afk_${message.author.id}`);
+
+    await db.delete(
+      `afk_${message.author.id}`
+    );
 
     message.reply({
       embeds: [
+
         new EmbedBuilder()
           .setColor("#57F287")
+
           .setThumbnail(
-            message.author.displayAvatarURL({ dynamic: true })
+            message.author.displayAvatarURL({
+              dynamic: true
+            })
           )
+
           .setDescription(
             `<:Tick:1514714190500335677> Welcome back ${message.author} from Global AFK\n\n` +
             `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(globalAfk.since / 1000)}:R>\n` +
@@ -175,30 +223,39 @@ client.on("messageCreate", async (message) => {
   // REMOVE SERVER AFK
   // =========================
 
-  const serverAfk = await db.get(
-    `afk_${message.guild.id}_${message.author.id}`
-  );
+  if (message.guild) {
 
-  if (serverAfk) {
-    await db.delete(
+    const serverAfk = await db.get(
       `afk_${message.guild.id}_${message.author.id}`
     );
 
-    message.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setColor("#A9C7FF")
-          .setThumbnail(
-            message.author.displayAvatarURL({ dynamic: true })
-          )
-          .setDescription(
-            `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
-            `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
-            `<:info:1514699288674828310> Reason • ${serverAfk.reason}\n` +
-            `<:dot:1514706694079254730> Mentions • **${serverAfk.mentions || 0}**`
-          )
-      ]
-    });
+    if (serverAfk) {
+
+      await db.delete(
+        `afk_${message.guild.id}_${message.author.id}`
+      );
+
+      message.reply({
+        embeds: [
+
+          new EmbedBuilder()
+            .setColor("#A9C7FF")
+
+            .setThumbnail(
+              message.author.displayAvatarURL({
+                dynamic: true
+              })
+            )
+
+            .setDescription(
+              `<:Tick:1514714190500335677> Welcome back ${message.author} from Server AFK\n\n` +
+              `<:arrow:1514699753462566953> You have been AFK since <t:${Math.floor(serverAfk.since / 1000)}:R>\n` +
+              `<:info:1514699288674828310> Reason • ${serverAfk.reason}\n` +
+              `<:dot:1514706694079254730> Mentions • **${serverAfk.mentions || 0}**`
+            )
+        ]
+      });
+    }
   }
 
   // =========================
@@ -208,29 +265,39 @@ client.on("messageCreate", async (message) => {
   for (const user of message.mentions.users.values()) {
 
     const globalKey = `afk_${user.id}`;
-    const serverKey = `afk_${message.guild.id}_${user.id}`;
+
+    const serverKey = message.guild
+      ? `afk_${message.guild.id}_${user.id}`
+      : null;
 
     let data = await db.get(globalKey);
     let key = globalKey;
 
-    if (!data) {
+    if (!data && serverKey) {
+
       data = await db.get(serverKey);
       key = serverKey;
     }
 
     if (!data) continue;
 
-    data.mentions = (data.mentions || 0) + 1;
+    data.mentions =
+      (data.mentions || 0) + 1;
 
     await db.set(key, data);
 
     message.reply({
       embeds: [
+
         new EmbedBuilder()
           .setColor("#FFCC66")
+
           .setThumbnail(
-            user.displayAvatarURL({ dynamic: true })
+            user.displayAvatarURL({
+              dynamic: true
+            })
           )
+
           .setDescription(
             `<:WarningIcon:1514708751385497721> **${user.username} is currently AFK**\n\n` +
             `<:arrow:1514699753462566953> Reason • ${data.reason}\n` +
@@ -265,25 +332,37 @@ client.on("messageCreate", async (message) => {
   // =========================
 
   if (message.reference) {
+
     try {
-      const replied = await message.channel.messages.fetch(
-        message.reference.messageId
-      );
+
+      const replied =
+        await message.channel.messages.fetch(
+          message.reference.messageId
+        );
 
       const isAiMessage =
         replied.reactions.cache.some(
-          r => r.emoji.id === "1514699727072133233"
+          r =>
+            r.emoji.id ===
+            "1514699727072133233"
         );
 
       if (isAiMessage) {
-        const aiCommand = client.commands.get("ai");
 
-        return aiCommand.execute(
-          message,
-          message.content.split(" ")
-        );
+        const aiCommand =
+          client.commands.get("ai");
+
+        if (aiCommand) {
+
+          return aiCommand.execute(
+            message,
+            message.content.split(" ")
+          );
+        }
       }
+
     } catch (err) {
+
       console.log(
         "AI CHECK ERROR:",
         err?.message || String(err)
@@ -295,15 +374,13 @@ client.on("messageCreate", async (message) => {
   // CHAT HISTORY
   // =========================
 
-  if (message.author.bot) return;
-
   db.push(
     `chat_${message.author.id}`,
     message.content
   );
 
   // =========================
-  // SECOND AFK CHECK
+  // GLOBAL AFK CHECK
   // =========================
 
   const afkData = await db.get(
@@ -311,22 +388,27 @@ client.on("messageCreate", async (message) => {
   );
 
   if (afkData) {
+
     await db.delete(
       `afk_${message.author.id}`
     );
 
     message.reply({
       embeds: [
+
         new EmbedBuilder()
           .setColor("#D3D3D3")
+
           .setDescription(
             `<:Tick:1514714190500335677> Welcome back ${message.author}`
           )
       ]
     }).then(m => {
+
       setTimeout(() => {
         m.delete().catch(() => {});
       }, 5000);
+
     });
   }
 
@@ -335,15 +417,21 @@ client.on("messageCreate", async (message) => {
   // =========================
 
   if (
-    message.content === `<@${client.user.id}>` ||
-    message.content === `<@!${client.user.id}>`
+    message.content ===
+      `<@${client.user.id}>` ||
+
+    message.content ===
+      `<@!${client.user.id}>`
   ) {
 
     const embed = new EmbedBuilder()
+
       .setColor("#D3D3D3")
+
       .setTitle(
         "<:bot1:1514699532686852227> | Prefix Info"
       )
+
       .setDescription(
 `<:dot:1514706694079254730> **Prefix Help**
 Hey ${message.author}! Here are my current prefixes:
@@ -356,12 +444,17 @@ Hey ${message.author}! Here are my current prefixes:
 > ***Tip***: *Use \`,help\` to see all my commands.*`
       );
 
-    const pingMsg = await message.reply({
-      embeds: [embed]
-    });
+    const pingMsg =
+      await message.reply({
+        embeds: [embed]
+      });
 
     setTimeout(() => {
-      pingMsg.delete().catch(() => {});
+
+      pingMsg
+        .delete()
+        .catch(() => {});
+
     }, 15000);
 
     return;
@@ -372,20 +465,27 @@ Hey ${message.author}! Here are my current prefixes:
   // =========================
 
   const isNoPrefix =
-    message.author.id === "1530872106399567941" ||
-    await db.get(`noprefix_${message.author.id}`);
+    message.author.id ===
+      "1530872106399567941" ||
+
+    await db.get(
+      `noprefix_${message.author.id}`
+    );
 
   let args;
   let commandName;
 
-  if (message.content.startsWith(prefix)) {
+  if (
+    message.content.startsWith(prefix)
+  ) {
 
     args = message.content
       .slice(prefix.length)
       .trim()
       .split(/ +/);
 
-    commandName = args.shift().toLowerCase();
+    commandName =
+      args.shift()?.toLowerCase();
 
   } else if (isNoPrefix) {
 
@@ -393,13 +493,18 @@ Hey ${message.author}! Here are my current prefixes:
       .trim()
       .split(/ +/);
 
-    commandName = args.shift().toLowerCase();
+    commandName =
+      args.shift()?.toLowerCase();
 
   } else {
+
     return;
   }
 
-  const command = client.commands.get(commandName);
+  if (!commandName) return;
+
+  const command =
+    client.commands.get(commandName);
 
   if (!command) return;
 
@@ -410,6 +515,7 @@ Hey ${message.author}! Here are my current prefixes:
   const cooldown = 5000;
 
   if (!cooldowns.has(command.name)) {
+
     cooldowns.set(
       command.name,
       new Collection()
@@ -417,33 +523,53 @@ Hey ${message.author}! Here are my current prefixes:
   }
 
   const now = Date.now();
-  const timestamps = cooldowns.get(command.name);
 
-  if (timestamps.has(message.author.id)) {
+  const timestamps =
+    cooldowns.get(command.name);
+
+  if (
+    timestamps.has(message.author.id)
+  ) {
 
     const expirationTime =
-      timestamps.get(message.author.id) + cooldown;
+      timestamps.get(
+        message.author.id
+      ) + cooldown;
 
     if (now < expirationTime) {
 
       const timeLeft =
-        ((expirationTime - now) / 1000).toFixed(2);
+        (
+          (expirationTime - now) /
+          1000
+        ).toFixed(2);
 
-      const cooldownEmbed = new EmbedBuilder()
-        .setColor("#FF7F7F")
-        .setTitle("You can't use this command!")
-        .setDescription(
+      const cooldownEmbed =
+        new EmbedBuilder()
+
+          .setColor("#FF7F7F")
+
+          .setTitle(
+            "You can't use this command!"
+          )
+
+          .setDescription(
 `<a:spider_cross:1514728338701287640> You are under cooldown to this command!
 
 <:arrow:1514699753462566953> Cooldown ~ \`${timeLeft} s\``
-        );
+          );
 
-      const msg = await message.reply({
-        embeds: [cooldownEmbed]
-      });
+      const msg =
+        await message.reply({
+          embeds: [cooldownEmbed]
+        });
 
       setTimeout(() => {
-        msg.delete().catch(() => {});
+
+        msg
+          .delete()
+          .catch(() => {});
+
       }, 10000);
 
       return;
@@ -456,7 +582,11 @@ Hey ${message.author}! Here are my current prefixes:
   );
 
   setTimeout(() => {
-    timestamps.delete(message.author.id);
+
+    timestamps.delete(
+      message.author.id
+    );
+
   }, cooldown);
 
   // =========================
@@ -489,12 +619,20 @@ Hey ${message.author}! Here are my current prefixes:
 // =========================
 
 client.login(process.env.TOKEN)
+
   .then(() => {
-    console.log("✅ Discord login successful");
+
+    console.log(
+      "✅ Discord login successful"
+    );
+
   })
+
   .catch((err) => {
+
     console.error(
       "❌ DISCORD LOGIN ERROR:",
       err?.message || String(err)
     );
+
   });
