@@ -98,8 +98,6 @@ client.once('clientReady', () => {
 
   require("./events/giveawayManager")(client);
 
-    let statusIndex = 0;
-
 const updateStatus = () => {
     const users = client.guilds.cache.reduce(
         (total, guild) => total + guild.memberCount,
