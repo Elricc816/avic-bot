@@ -15,7 +15,8 @@ console.log("Node Version:", process.version);
 const {
   Client,
   GatewayIntentBits,
-  Collection
+  Collection,
+  EmbedBuilder
 } = require('discord.js');
 
 const ffmpegPath = require('ffmpeg-static');
@@ -116,12 +117,11 @@ const updateStatus = () => {
 };
 
 updateStatus();
+});
 
 client.on('messageCreate', async message => {
 
   const { EmbedBuilder } = require("discord.js");
-const { QuickDB } = require("quick.db");
-const db = new QuickDB();
 
 // =========================
 // REMOVE GLOBAL AFK
