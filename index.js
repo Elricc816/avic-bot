@@ -19,6 +19,8 @@ const {
     EmbedBuilder
 } = require("discord.js");
 
+const http = require("http");
+
 const ffmpegPath = require("ffmpeg-static");
 const fs = require("fs");
 const path = require("path");
@@ -54,20 +56,7 @@ const client = new Client({
 // WEBSITE STATS API
 // =========================
 
-const http = require("http");
-
 http.createServer((req, res) => {
-    if (req.url !== "/stats") {
-        res.writeHead(404, {
-            "Content-Type": "application/json"
-        });
-
-        return res.end(
-            JSON.stringify({
-                error: "Not found"
-            })
-        );
-    }
 
     res.writeHead(200, {
         "Content-Type": "application/json",
@@ -75,18 +64,59 @@ http.createServer((req, res) => {
         "Cache-Control": "no-store"
     });
 
-    res.end(
+    // SERVER LIST
+    if (req.url === "/api/servers") {
+
+        const servers = client.guilds.cache.map(guild => ({
+            id: guild.id,
+            name: guild.name,
+            icon: guild.iconURL({
+                extension: "png",
+                size: 128
+            }),
+            members: guild.memberCount
+        }));
+
+        return res.end(
+            JSON.stringify({
+                success: true,
+                count: servers.length,
+                servers
+            })
+        );
+    }
+
+    // WEBSITE STATS
+    if (req.url === "/stats") {
+
+        return res.end(
+            JSON.stringify({
+                servers: client.guilds.cache.size,
+
+                users: client.guilds.cache.reduce(
+                    (total, guild) =>
+                        total + (guild.memberCount || 0),
+                    0
+                ),
+
+                commands: client.commands.size,
+
+                ping: client.ws.ping
+            })
+        );
+    }
+
+    // NOT FOUND
+    res.writeHead(404, {
+        "Content-Type": "application/json"
+    });
+
+    return res.end(
         JSON.stringify({
-            servers: client.guilds.cache.size,
-            users: client.guilds.cache.reduce(
-                (total, guild) =>
-                    total + (guild.memberCount || 0),
-                0
-            ),
-            commands: client.commands.size,
-            ping: client.ws.ping
+            error: "Not found"
         })
     );
+
 }).listen(process.env.PORT || 3000);
 
 client.queues = new Map();
