@@ -52,20 +52,22 @@ const client = new Client({
     }
 });
 
-// =========================
+// ======================
 // WEBSITE STATS API
-// =========================
+// ======================
 
 http.createServer((req, res) => {
 
-    res.writeHead(200, {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Cache-Control": "no-store"
-    });
+    const url = new URL(
+        req.url,
+        `http://${req.headers.host}`
+    );
 
+    // ----------------------
     // SERVER LIST
-    if (req.url === "/api/servers") {
+    // ----------------------
+
+    if (url.pathname === "/api/servers") {
 
         const servers = client.guilds.cache.map(guild => ({
             id: guild.id,
@@ -74,48 +76,79 @@ http.createServer((req, res) => {
                 extension: "png",
                 size: 128
             }),
-            members: guild.memberCount
+            members: guild.memberCount || 0
         }));
 
-        return res.end(
-            JSON.stringify({
-                success: true,
-                count: servers.length,
-                servers
-            })
-        );
+        res.writeHead(200, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "no-store"
+        });
+
+        return res.end(JSON.stringify({
+            success: true,
+            count: servers.length,
+            servers
+        }));
     }
 
+    // ----------------------
     // WEBSITE STATS
-    if (req.url === "/stats") {
+    // ----------------------
 
-        return res.end(
-            JSON.stringify({
-                servers: client.guilds.cache.size,
+    if (url.pathname === "/stats") {
 
-                users: client.guilds.cache.reduce(
-                    (total, guild) =>
-                        total + (guild.memberCount || 0),
-                    0
-                ),
+        res.writeHead(200, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "no-store"
+        });
 
-                commands: client.commands.size,
+        return res.end(JSON.stringify({
+            servers: client.guilds.cache.size,
 
-                ping: client.ws.ping
-            })
-        );
+            users: client.guilds.cache.reduce(
+                (total, guild) =>
+                    total + (guild.memberCount || 0),
+                0
+            ),
+
+            commands: client.commands.size,
+
+            ping: client.ws.ping
+        }));
     }
 
+    // ----------------------
+    // RAILWAY HEALTH CHECK
+    // ----------------------
+
+    if (url.pathname === "/") {
+
+        res.writeHead(200, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        });
+
+        return res.end(JSON.stringify({
+            success: true,
+            bot: "Fare",
+            status: "online"
+        }));
+    }
+
+    // ----------------------
     // NOT FOUND
+    // ----------------------
+
     res.writeHead(404, {
         "Content-Type": "application/json"
     });
 
-    return res.end(
-        JSON.stringify({
-            error: "Not found"
-        })
-    );
+    return res.end(JSON.stringify({
+        success: false,
+        error: "Not found"
+    }));
 
 }).listen(process.env.PORT || 3000);
 
