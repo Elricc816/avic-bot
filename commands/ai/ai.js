@@ -26,7 +26,7 @@ module.exports = {
 
         try {
             const response = await client.chat.completions.create({
-                model: "gpt-4o",
+                model: "gpt-5.5",
                 messages: [{ role: "user", content: prompt }],
             });
 
