@@ -21,6 +21,20 @@ module.exports = (client) => {
         if (interaction.isButton()) {
 
             // =========================
+// FARE DM OFF BUTTON
+// =========================
+
+if (interaction.customId === "dm_off") {
+
+    await db.set(`dmupdates.${interaction.user.id}`, false);
+
+    return interaction.reply({
+        content: "🔕 Fare DMs have been disabled.",
+        ephemeral: true
+    });
+}
+            
+            // =========================
 // GIVEAWAY JOIN
 // =========================
 
