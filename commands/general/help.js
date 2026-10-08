@@ -9,7 +9,7 @@ const {
 const cooldown = new Set();
 
 const BANNER_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1543492999626104852/banner.jpg?ex=6a95115f&is=6a93bfdf&hm=6a1c42a3b2edb9bcbd6ec1cf79ef42f58f75756dc159206c65465a18a662f668&';
-const ICON_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1543492889475153961/icon.jpg?ex=6a951145&is=6a93bfc5&hm=9c118bc6b4dc4b177ad0665531a2bd975511f8b53015c5b08cd443ea941195dd&';
+const ICON_URL = 'https://cdn.discordapp.com/attachments/1557449254501351544/1557795503486271529/file_000000000ec88230bacb8bd458512d75.png?ex=6ac9199e&is=6ac7c81e&hm=93a3e18ae8a9f0477dba11c1794ede0b684859576bd71c515022b54b89e89929&d&';
 
 const OWNER_ID = '1530872106399567941';
 
