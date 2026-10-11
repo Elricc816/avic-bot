@@ -27,11 +27,12 @@ function helpEmbed() {
     .setTitle('Server-only bot profile')
     .setDescription(
       'These settings affect the bot only in this server. Its global Discord profile will not change.\n\n' +
+      '`,customize` — show this help\n' +
+      '`,customize bio <text>` — set the server bio\n' +
       '`,customize avatar` — attach an image to set the server avatar\n' +
       '`,customize banner` — attach an image to set the server banner\n' +
-      '`,customize bio <text>` — set the server bio (up to 190 characters)\n' +
-      '`,customize bio clear` — clear the server bio\n' +
-      '`,customize reset` — clear this server’s avatar, banner, and bio'
+      '`,customize nick <name>` — set the bot’s nickname in this server\n' +
+      '`,customize reset <avatar|banner|bio|nick|all>` — reset one or all server settings'
     );
 }
 
@@ -111,6 +112,7 @@ module.exports = {
     }
 
     const action = (args[0] || '').toLowerCase();
+
     if (!action || action === 'help') {
       return message.reply({ embeds: [helpEmbed()] });
     }
@@ -120,6 +122,7 @@ module.exports = {
 
     if (action === 'avatar' || action === 'banner') {
       const attachment = message.attachments.first();
+
       if (!attachment) {
         return message.reply({
           embeds: [
@@ -146,7 +149,7 @@ module.exports = {
       } else {
         if (!bio) {
           return message.reply({
-            embeds: [errorEmbed('Add bio text, or use `,customize bio clear`.')]
+            embeds: [errorEmbed('Use `,customize bio <text>` to set a bio, or `,customize reset bio` to clear it.')]
           });
         }
 
@@ -159,15 +162,60 @@ module.exports = {
         body = { bio };
         successText = 'The bot’s bio has been updated for this server.';
       }
+    } else if (action === 'nick') {
+      const nick = args.slice(1).join(' ').trim();
+
+      if (nick.toLowerCase() === 'clear') {
+        body = { nick: null };
+        successText = 'The bot’s nickname has been cleared for this server.';
+      } else {
+        if (!nick) {
+          return message.reply({
+            embeds: [errorEmbed('Use `,customize nick <name>` to set a nickname, or `,customize reset nick` to clear it.')]
+          });
+        }
+
+        if (nick.length > 32) {
+          return message.reply({
+            embeds: [errorEmbed('The bot’s server nickname can be up to 32 characters.')]
+          });
+        }
+
+        body = { nick };
+        successText = 'The bot’s nickname has been updated for this server.';
+      }
     } else if (action === 'reset') {
-      body = { avatar: null, banner: null, bio: null };
-      successText = 'The bot’s server avatar, banner, and bio have been reset. Its global profile is unchanged.';
+      const target = (args[1] || '').toLowerCase();
+
+      const resetBodies = {
+        avatar: { avatar: null },
+        banner: { banner: null },
+        bio: { bio: null },
+        nick: { nick: null },
+        all: { avatar: null, banner: null, bio: null, nick: null }
+      };
+
+   if (!resetBodies[target]) {
+  return message.reply({
+    embeds: [
+      errorEmbed(
+        'Use `,customize reset <avatar|banner|bio|nick|all>`.\n' +
+        'Example: `,customize reset bio`'
+      )
+    ]
+  });
+   }
+
+      body = resetBodies[target];
+      successText = target === 'all'
+        ? 'All of the bot’s server profile settings have been reset. Its global profile is unchanged.'
+        : `The bot’s server ${target} has been reset.`;
     } else {
       return message.reply({ embeds: [helpEmbed()] });
     }
 
     try {
-      // This endpoint edits only the bot's profile in the current guild.
+      // This endpoint changes the bot's profile only in the current server.
       await client.rest.patch(`/guilds/${message.guild.id}/members/@me`, { body });
     } catch (error) {
       console.error('SERVER PROFILE UPDATE ERROR:', error);
