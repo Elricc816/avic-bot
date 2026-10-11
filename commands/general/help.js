@@ -558,8 +558,7 @@ module.exports = {
 `### Bot Settings
 
 **__Profile__**
-\`profile\` , \`bio\` , \`bio clear\` , \`bio set\` , \`badge\` , \`badge list\` , \`badge remove\` , \`badge add\`
-
+\`profile\` , \`profileedit\
 **__Branding__**
 \`customize\` , \`customize bio\` , \`customize avatar\` , \`customize reset\` , \`customize banner\` , \`customize nick\`
 
