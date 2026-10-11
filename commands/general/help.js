@@ -558,7 +558,7 @@ module.exports = {
 `### Bot Settings
 
 **__Profile__**
-\`profile\` , \`profileedit\
+\`profile\` , \`profileedit\`
 **__Branding__**
 \`customize\` , \`customize bio\` , \`customize avatar\` , \`customize reset\` , \`customize banner\` , \`customize nick\`
 
