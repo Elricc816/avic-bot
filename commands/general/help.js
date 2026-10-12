@@ -85,7 +85,7 @@ const prefixDisplay = usedPrefix ? `\`${usedPrefix}\`` : `\`No prefix required\`
     
     const infoEmbed = new EmbedBuilder()
       .setColor('#D3D3D3')
-      .setThumbnail(ICON_URL)
+      .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
       .setTitle('Fare Help')
       .setDescription(
         '-# Experience the ultimate Discord bot designed for seamless management and community engagement.'
