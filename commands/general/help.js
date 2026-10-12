@@ -81,7 +81,7 @@ const usedPrefix = [...activeServerPrefixes]
   .sort((a, b) => b.length - a.length)
   .find(prefix => message.content.startsWith(prefix));
 
-const prefixDisplay = usedPrefix ? `\`${usedPrefix}\`` : `\`'No prefix required'\``;
+const prefixDisplay = usedPrefix ? `\`${usedPrefix}\`` : `\`No prefix required\``;
     
     const infoEmbed = new EmbedBuilder()
       .setColor('#D3D3D3')
