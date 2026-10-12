@@ -11,12 +11,12 @@ function helpEmbed() {
     .setColor('#D3D3D3')
     .setTitle('Prefix Commands')
     .setDescription(
-      '`,prefix` — show these commands\n' +
-      '`,prefix show` — show this server’s active prefixes\n' +
-      '`,prefix set <prefix>` — replace all active prefixes with one\n' +
-      '`,prefix add <prefix>` — add a prefix without removing the others\n' +
-      '`,prefix remove <prefix>` — remove one active prefix\n' +
-      '`,prefix reset` — use only the default prefix `,`\n\n' +
+      '`prefix` — show these commands\n' +
+      '`prefix show` — show this server’s active prefixes\n' +
+      '`prefix set <prefix>` — replace all active prefixes with one\n' +
+      '`prefix add <prefix>` — add a prefix without removing the others\n' +
+      '`prefix remove <prefix>` — remove one active prefix\n' +
+      '`prefix reset` — use only the default prefix `,`\n\n' +
       '-# Max 5 prefixes per server, each up to 3 characters. Use `prefix set` to override all.\n' +
       '-# Users with No Prefix enabled do not require these prefixes.'
     );
