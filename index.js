@@ -178,7 +178,7 @@ for (const file of eventFiles) {
     }
 }
 
-const prefix = ",";
+const GLOBAL_PREFIX = ",";
 
 // =========================
 // COMMAND LOADER
