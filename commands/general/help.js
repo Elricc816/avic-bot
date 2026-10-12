@@ -576,6 +576,7 @@ const prefixDisplay = usedPrefix ? `\`${usedPrefix}\`` : 'No prefix required';
 
 **__Profile__**
 \`profile\` , \`profileedit\`
+
 **__Branding__**
 \`customize\` , \`customize bio\` , \`customize avatar\` , \`customize reset\` , \`customize banner\` , \`customize nick\`
 
