@@ -8,6 +8,9 @@ const {
 
 const cooldown = new Set();
 
+const db = require('../../database');
+const DEFAULT_PREFIX = ',';
+
 const BANNER_URL = 'https://cdn.discordapp.com/attachments/1535172200951316500/1543492999626104852/banner.jpg?ex=6a95115f&is=6a93bfdf&hm=6a1c42a3b2edb9bcbd6ec1cf79ef42f58f75756dc159206c65465a18a662f668&';
 const ICON_URL = 'https://cdn.discordapp.com/attachments/1557449254501351544/1557795503486271529/file_000000000ec88230bacb8bd458512d75.png?ex=6ac9199e&is=6ac7c81e&hm=93a3e18ae8a9f0477dba11c1794ede0b684859576bd71c515022b54b89e89929&d&';
 
@@ -65,7 +68,21 @@ module.exports = {
     // =========================
     // MAIN HELP EMBED
     // =========================
+const savedServerPrefixes = message.guild
+  ? await db.get(`server_prefixes_${message.guild.id}`)
+  : null;
 
+const activeServerPrefixes =
+  Array.isArray(savedServerPrefixes) && savedServerPrefixes.length > 0
+    ? savedServerPrefixes
+    : [DEFAULT_PREFIX];
+
+const usedPrefix = [...activeServerPrefixes]
+  .sort((a, b) => b.length - a.length)
+  .find(prefix => message.content.startsWith(prefix));
+
+const prefixDisplay = usedPrefix ? `\`${usedPrefix}\`` : 'No prefix required';
+    
     const infoEmbed = new EmbedBuilder()
       .setColor('#D3D3D3')
       .setThumbnail(ICON_URL)
@@ -76,7 +93,7 @@ module.exports = {
       .addFields({
         name: ' ‎',
         value:
-`<:slash:1514699274917511248> **Prefix:** \`,\`
+<:slash:1514699274917511248> **Prefix:** ${prefixDisplay}
 <:dev:1514699929199706143> **Commands:** \`${client.commands.size}\`
 <:general:1514699942181081261> **Modules:** \`19\`
 <:crown:1514699539657920592> **Bot Owner:** <@${OWNER_ID}>
