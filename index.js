@@ -498,26 +498,41 @@ Hey ${message.author}! Here are my current prefixes:
         let args;
         let commandName;
 
-        if (message.content.startsWith(prefix)) {
-            args = message.content
-                .slice(prefix.length)
-                .trim()
-                .split(/ +/);
+        const savedPrefixes = message.guild
+    ? await db.get(`server_prefixes_${message.guild.id}`)
+    : [];
 
-            commandName = args
-                .shift()
-                .toLowerCase();
-        } else if (isNoPrefix) {
-            args = message.content
-                .trim()
-                .split(/ +/);
+const customPrefixes = Array.isArray(savedPrefixes)
+    ? savedPrefixes.filter(prefix => typeof prefix === 'string' && prefix.length > 0)
+    : [];
 
-            commandName = args
-                .shift()
-                .toLowerCase();
-        } else {
-            return;
-        }
+const activePrefixes = customPrefixes.length
+    ? customPrefixes
+    : [DEFAULT_PREFIX];
+
+const prefixesToCheck = [...activePrefixes]
+    .sort((a, b) => b.length - a.length);
+
+const matchedPrefix = prefixesToCheck.find(prefix =>
+    message.content.startsWith(prefix)
+);
+
+if (matchedPrefix) {
+    args = message.content
+        .slice(matchedPrefix.length)
+        .trim()
+        .split(/ +/);
+
+    commandName = (args.shift() || '').toLowerCase();
+} else if (isNoPrefix) {
+    args = message.content
+        .trim()
+        .split(/ +/);
+
+    commandName = (args.shift() || '').toLowerCase();
+} else {
+    return;
+    }
 
         // =========================
         // FIND COMMAND
