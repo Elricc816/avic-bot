@@ -1,7 +1,7 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const db = require('../../database');
 
-const GLOBAL_PREFIX = ',';
+const DEFAULT_PREFIX = ',';
 const MAX_PREFIX_LENGTH = 10;
 const MAX_CUSTOM_PREFIXES = 5;
 const PREFIX_KEY = guildId => `server_prefixes_${guildId}`;
@@ -32,36 +32,37 @@ module.exports = {
     }
 
     const key = PREFIX_KEY(message.guild.id);
-    const storedPrefixes = await db.get(key);
-    let prefixes = Array.isArray(storedPrefixes) ? storedPrefixes : [];
+    const savedPrefixes = await db.get(key);
+    let prefixes = Array.isArray(savedPrefixes) ? savedPrefixes : [];
 
     const action = (args[0] || 'show').toLowerCase();
     const value = args.slice(1).join(' ').trim();
 
     if (action === 'show') {
-      const serverPrefixes = prefixes.length
-        ? prefixes.map(prefix => `\`${prefix}\``).join(', ')
-        : 'None set';
+      const activePrefixes = prefixes.length ? prefixes : [DEFAULT_PREFIX];
 
       return reply(
-        `Global prefix: \`${GLOBAL_PREFIX}\` (always works)\n` +
-        `Extra prefixes for this server: ${serverPrefixes}\n\n` +
-        'Use `,prefix set <prefix>`, `,prefix add <prefix>`, ' +
-        '` ,prefix remove <prefix>`, or `,prefix reset`.'
+        `Active prefix${activePrefixes.length === 1 ? '' : 'es'}: ` +
+        activePrefixes.map(prefix => `\`${prefix}\``).join(', ')
       );
     }
 
     if (action === 'reset') {
+      if (prefixes.length === 0) {
+        return reply('**There are no custom prefixes configured to reset.**');
+      }
+
       await db.delete(key);
       return reply(
-        `This server’s extra prefixes have been reset. The global prefix \`${GLOBAL_PREFIX}\` still works.`,
+        `Custom prefixes reset. The default prefix \`${DEFAULT_PREFIX}\` now works in this server.`,
         '#57F287'
       );
     }
 
     if (!['set', 'add', 'remove'].includes(action)) {
       return reply(
-        'Commands: `,prefix show`, `,prefix set <prefix>`, `,prefix add <prefix>`, `,prefix remove <prefix>`, `,prefix reset`.'
+        'Use `,prefix show`, `,prefix set <prefix>`, `,prefix add <prefix>`, ' +
+        '` ,prefix remove <prefix>`, or `,prefix reset`.'
       );
     }
 
@@ -70,22 +71,21 @@ module.exports = {
     }
 
     if (value.length > MAX_PREFIX_LENGTH || /[\s@`]/u.test(value)) {
-      return reply('A prefix must be 1–10 characters, with no spaces.', '#ED4245');
+      return reply('A prefix must be 1–10 characters and cannot contain spaces.', '#ED4245');
     }
 
-    if (value === GLOBAL_PREFIX) {
+    if (value === DEFAULT_PREFIX) {
       return reply(
-        `\`${GLOBAL_PREFIX}\` is the global prefix and cannot be added or removed.`,
+        `\`${DEFAULT_PREFIX}\` is the default prefix. Use \`,prefix reset\` to return to it.`,
         '#ED4245'
       );
     }
 
     if (action === 'set') {
-      prefixes = [value];
-      await db.set(key, prefixes);
+      await db.set(key, [value]);
 
       return reply(
-        `This server’s extra prefix is now \`${value}\`. The global prefix \`${GLOBAL_PREFIX}\` still works.`,
+        `This server’s only prefix is now \`${value}\`. The default prefix is off in this server.`,
         '#57F287'
       );
     }
@@ -96,27 +96,40 @@ module.exports = {
       }
 
       if (prefixes.length >= MAX_CUSTOM_PREFIXES) {
-        return reply(`A server can have up to ${MAX_CUSTOM_PREFIXES} extra prefixes.`, '#ED4245');
+        return reply(`A server can have up to ${MAX_CUSTOM_PREFIXES} custom prefixes.`, '#ED4245');
       }
 
       prefixes.push(value);
       await db.set(key, prefixes);
 
-      return reply(`Added \`${value}\` for this server.`, '#57F287');
+      return reply(
+        `Added \`${value}\`. The active prefixes are ${prefixes.map(prefix => `\`${prefix}\``).join(', ')}.`,
+        '#57F287'
+      );
+    }
+
+    if (prefixes.length === 0) {
+      return reply('There are no custom prefixes set for this server.', '#ED4245');
     }
 
     if (!prefixes.includes(value)) {
-      return reply(`\`${value}\` is not set as an extra prefix for this server.`, '#ED4245');
+      return reply(`\`${value}\` is not set for this server.`, '#ED4245');
     }
 
     prefixes = prefixes.filter(prefix => prefix !== value);
 
-    if (prefixes.length) {
+    if (prefixes.length > 0) {
       await db.set(key, prefixes);
-    } else {
-      await db.delete(key);
+      return reply(
+        `Removed \`${value}\`. Remaining prefixes: ${prefixes.map(prefix => `\`${prefix}\``).join(', ')}.`,
+        '#57F287'
+      );
     }
 
-    return reply(`Removed \`${value}\` from this server. The global prefix still works.`, '#57F287');
+    await db.delete(key);
+    return reply(
+      `Removed \`${value}\`. No custom prefixes remain, so the default \`${DEFAULT_PREFIX}\` works again.`,
+      '#57F287'
+    );
   }
 };
