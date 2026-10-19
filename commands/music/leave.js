@@ -1,9 +1,23 @@
+const { getQueueForMessage } = require("./_utils");
+const { deleteNowPlaying } = require("../../events/musicPanel");
+
 module.exports = {
-  name: 'leave',
-  execute(message, args, client) {
-    const queue = client.distube.getQueue(message.guildId);
-    if (!queue) return message.reply('<:error:1533894397219831889> Not connected.');
-    queue.voice.leave();
-    message.reply('<:power:1520340458767646821> Left the voice channel.');
-  },
+    name: "leave",
+
+    async execute(message, args, client) {
+        const result = getQueueForMessage(message, client);
+        if (result.error) return message.reply(result.error);
+
+        const { queue } = result;
+        client.queues.delete(message.guild.id);
+        await deleteNowPlaying(queue);
+
+        try {
+            await client.shoukaku.leaveVoiceChannel(message.guild.id);
+        } catch (error) {
+            console.warn("Could not disconnect music player:", error?.message || String(error));
+        }
+
+        return message.reply("Stopped playback and left the voice channel.");
+    }
 };
