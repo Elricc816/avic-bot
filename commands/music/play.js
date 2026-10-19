@@ -1,107 +1,100 @@
 const { EmbedBuilder } = require("discord.js");
-const { sendNowPlaying, playNext } = require("../../events/musicPanel");
+const { extractTracks, formatDuration } = require("../../utils/music");
+const { playNext } = require("../../events/musicPanel");
+const { getOrCreateMusicQueue } = require("./_utils");
 
 module.exports = {
     name: "play",
     aliases: ["p"],
 
     async execute(message, args) {
-    const client = message.client;
-        
+        const client = message.client;
+
         if (!args.length) {
-            return message.reply(
-                "<a:spider_cross:1514728338701287640> **__Give me a song name or URL.__**"
-            );
+            return message.reply("Give me a song name or URL.");
         }
 
-        const voiceChannel = message.member?.voice?.channel;
-
-        if (!voiceChannel) {
-            return message.reply(
-                "<a:spider_cross:1514728338701287640> **__Join a voice channel first.__**"
-            );
-        }
-
-        let queue = client.queues.get(message.guild.id);
-
-        if (!queue) {
-            const player = await client.shoukaku.joinVoiceChannel({
-                guildId: message.guild.id,
-                channelId: voiceChannel.id,
-                shardId: 0
-            });
-
-            queue = {
-                player,
-                tracks: [],
-                history: [],
-                textChannel: message.channel,
-                playing: false,
-                current: null,
-                loop: false,
-                autoplay: false,
-                nowPlayingMessage: null
-            };
-            client.queues.set(message.guild.id, queue);
-
-            player.on("end", () => playNext(client, message.guild.id));
-            player.on("exception", (err) => {
-                console.error("MUSIC STREAM ERROR:", err?.message || String(err));
-                playNext(client, message.guild.id);
-            });
-            player.on("stuck", () => playNext(client, message.guild.id));
-        }
-
-        const query = args.join(" ");
+        const query = args.join(" ").trim();
 
         try {
+            if (!message.guild) {
+                return message.reply("Music can only be used in a server.");
+            }
+
+            if (!message.member?.voice?.channel) {
+                return message.reply("Join a voice channel first.");
+            }
+
+            if (!client.shoukaku) {
+                return message.reply("The music service is not initialized. Please contact a bot admin.");
+            }
+
             const node = client.shoukaku.options.nodeResolver(client.shoukaku.nodes);
-            const isUrl = /^https?:\/\//.test(query);
+
+            if (!node) {
+                return message.reply("The music service is currently unavailable.");
+            }
+
+            const isUrl = /^https?:\/\//i.test(query);
             const result = await node.rest.resolve(isUrl ? query : `ytsearch:${query}`);
+            const resolvedTracks = extractTracks(result)
+                .filter((track) => track?.encoded && track?.info);
 
-            if (!result || !result.data || (Array.isArray(result.data) && result.data.length === 0)) {
-                return message.reply(
-                    "<a:spider_cross:1514728338701287640> **__I couldn't play that song.__**"
-                );
+            if (!resolvedTracks.length) {
+                return message.reply("I couldn't find a playable track for that search.");
             }
 
-            const track = Array.isArray(result.data)
-                ? result.data[0]
-                : result.data.tracks?.[0] || result.data;
+            const isPlaylist = result?.loadType === "playlist" ||
+                Boolean(result?.data?.info?.name && Array.isArray(result?.data?.tracks));
+            const tracks = (isPlaylist ? resolvedTracks : resolvedTracks.slice(0, 1))
+                .slice(0, 100);
 
-            track.requestedBy = message.author;
+            const queueResult = await getOrCreateMusicQueue(message, client);
+            if (queueResult.error) return message.reply(queueResult.error);
+            const { queue } = queueResult;
 
-            queue.tracks.push(track);
+            queue.textChannel = message.channel;
+            tracks.forEach((track) => {
+                track.requestedBy = message.author;
+            });
+            queue.tracks.push(...tracks);
 
-            if (!queue.playing) {
-                playNext(client, message.guild.id);
-            } else {
-                const queueEmbed = new EmbedBuilder()
-                    .setColor("#FFFFFF")
-                    .setTitle("Added to Queue")
-                    .setThumbnail(track.info.artworkUrl || null)
-                    .setDescription(
-                        `<:youtube:1545131580090097725> **${track.info.title}**\n\n` +
-                        `Duration: \`${msToTime(track.info.length)}\`\n` +
-                        `Requested by ${message.author}`
-                    )
-                    .setFooter({ text: "Fare Music" });
+            const shouldStart = !queue.current && !queue.playing;
 
-                message.channel.send({ embeds: [queueEmbed] });
+            if (shouldStart) {
+                const started = await playNext(client, message.guild.id);
+
+                if (!started) {
+                    return message.reply("I found the track but couldn't start playback. Check the Lavalink connection.");
+                }
+
+                return;
             }
 
+            const playlistName = result?.data?.info?.name;
+            const firstTrack = tracks[0];
+            const description = [
+                playlistName
+                    ? `Added **${playlistName}** (${tracks.length} tracks) to the queue.`
+                    : `Added **${firstTrack.info.title || "Track"}** to the queue.`,
+                `Duration: \`${formatDuration(firstTrack.info.length)}\``,
+                `Requested by ${message.author}`
+            ].join("\n");
+
+            const embed = new EmbedBuilder()
+                .setColor("#FFFFFF")
+                .setTitle("Added to Queue")
+                .setDescription(description)
+                .setFooter({ text: "Fare Music" });
+
+            if (firstTrack.info.artworkUrl) {
+                embed.setThumbnail(firstTrack.info.artworkUrl);
+            }
+
+            return message.channel.send({ embeds: [embed] });
         } catch (error) {
             console.error("MUSIC ERROR:", error?.message || String(error));
-            return message.reply(
-                "<a:spider_cross:1514728338701287640> **__I couldn't play that song.__**"
-            );
+            return message.reply("I couldn't play that song. Check the Lavalink connection and try again.");
         }
     }
 };
-
-function msToTime(ms) {
-    const totalSec = Math.floor(ms / 1000);
-    const min = Math.floor(totalSec / 60);
-    const sec = totalSec % 60;
-    return `${min}:${sec.toString().padStart(2, "0")}`;
-}
