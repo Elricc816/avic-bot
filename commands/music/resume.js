@@ -1,9 +1,19 @@
+const { getQueueForMessage } = require("./_utils");
+
 module.exports = {
-  name: 'resume',
-  execute(message, args, client) {
-    const queue = client.distube.getQueue(message.guildId);
-    if (!queue) return message.reply('<:error:1533894397219831889> Nothing is playing.');
-    queue.resume();
-    message.reply('<:play:1533532009450831945> Resumed.');
-  },
+    name: "resume",
+
+    async execute(message, args, client) {
+        const result = getQueueForMessage(message, client);
+        if (result.error) return message.reply(result.error);
+
+        const { queue } = result;
+
+        if (!queue.current) return message.reply("Nothing is playing right now.");
+        if (!queue.paused) return message.reply("Playback is already running.");
+
+        await queue.player.setPaused(false);
+        queue.paused = false;
+        return message.reply("Playback resumed.");
+    }
 };
