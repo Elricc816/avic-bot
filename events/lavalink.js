@@ -2,14 +2,17 @@ const { Shoukaku, Connectors } = require("shoukaku");
 
 const Nodes = [
     {
-        name: "main",
-        url: "lavalink.heavencloud.in:443",
-        auth: "heavencloud",
-        secure: true
+        name: process.env.LAVALINK_NAME || "main",
+        url: process.env.LAVALINK_URL || "lavalink.heavencloud.in:443",
+        auth: process.env.LAVALINK_PASSWORD || "heavencloud",
+        secure: process.env.LAVALINK_SECURE === undefined
+            ? true
+            : /^(1|true|yes)$/i.test(process.env.LAVALINK_SECURE)
     }
 ];
 
 module.exports = (client) => {
+    if (client.shoukaku) return client.shoukaku;
 
     const shoukaku = new Shoukaku(new Connectors.DiscordJS(client), Nodes);
 
@@ -19,4 +22,5 @@ module.exports = (client) => {
     shoukaku.on("disconnect", (name) => console.log(`Lavalink node "${name}" disconnected.`));
 
     client.shoukaku = shoukaku;
+    return shoukaku;
 };
